@@ -23,7 +23,6 @@ import com.zsl.swing.redis.desktop.utils.CollectionUtils;
 import com.zsl.swing.redis.desktop.utils.DialogUtils;
 import com.zsl.swing.redis.desktop.utils.IconUtils;
 import com.zsl.swing.redis.desktop.utils.RedisUtils;
-import com.zsl.swing.redis.desktop.utils.StringUtils;
 
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
@@ -37,6 +36,11 @@ public class KeyTree extends JTree{
 	private static RootKeyEntity rootKeyEntity = new RootKeyEntity("keys");
 	
 	private static KeyTreeNode<RootKeyEntity> rootNode = new KeyTreeNode<>(rootKeyEntity);
+	
+	/**
+	 * 1表示展示所有，2表示查询keys，3表示查询值 
+	 */
+	private int opType = Constants.OP_ALL;
 	
 	private KeyTree tree = this;
 	
@@ -83,6 +87,12 @@ public class KeyTree extends JTree{
 	
 	
 	
+	public void setOpType(int opType) {
+		this.opType = opType;
+	}
+
+
+
 	private class KeyTreeCellRender extends DefaultTreeCellRenderer{
 
 		private static final long serialVersionUID = 1L;
@@ -145,8 +155,7 @@ public class KeyTree extends JTree{
 			KeyEntity keyEntity = (KeyEntity)entity;
 			String showName = keyEntity.getShowName();
 			if(showName.equals(MORE_NODE_TEXT)) {
-				String param = KeyPanel.getQueryParam();
-				String key = StringUtils.isEmpty(param)?Constants.REDIS_ALL_PATTERN:param;
+				String key = Constants.OP_KEYS == tree.opType?KeyPanel.getQueryParam():Constants.OP_ALL == tree.opType?Constants.REDIS_ALL_PATTERN:null;
 				ScanResult<String> scanDb = RedisUtils.scanDb(selectedDbNode.getUniqueId(), selectedDbNode.getDbIndex(), key, keyEntity.getNextCursor());
 				
 				keyNode.removeFromParent();

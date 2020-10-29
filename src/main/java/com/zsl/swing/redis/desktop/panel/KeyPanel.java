@@ -129,6 +129,7 @@ public class KeyPanel extends JPanel implements ActionListener{
 		String command = e.getActionCommand();
 		if(B3_STR.equals(command)) {
 			this.clearPanel();
+			keyTree.setOpType(Constants.OP_ALL);
 			this.showAllKeys(dbEntity,Constants.REDIS_ALL_PATTERN);
 		}else {
 			String text = queryField.getText();
@@ -137,9 +138,11 @@ public class KeyPanel extends JPanel implements ActionListener{
 			}
 			
 			if(B1_STR.equals(command)) {
+				keyTree.setOpType(Constants.OP_VALUE);
 				this.showKeyValue(dbEntity, text);
 			}else if(B2_STR.equals(command)) {
 				this.clearResult();
+				keyTree.setOpType(Constants.OP_KEYS);
 				this.showAllKeys(dbEntity, text);
 			}
 		}

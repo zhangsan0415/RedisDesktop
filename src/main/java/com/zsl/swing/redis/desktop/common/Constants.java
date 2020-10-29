@@ -44,5 +44,12 @@ public class Constants {
 	public static final double DIVIDER_RADIO_MAX = 0.75d;
 	
 	public static final String REDIS_ALL_PATTERN = "*";
+	
+	
+	public static final int OP_ALL = 1;
+	
+	public static final int OP_KEYS = 2;
+	
+	public static final int OP_VALUE = 3;
 
 }
