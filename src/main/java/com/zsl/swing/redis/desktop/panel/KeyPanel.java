@@ -106,7 +106,13 @@ public class KeyPanel extends JPanel implements ActionListener{
 	
 	public static void setValueText(String text) {
 		if(!StringUtils.isEmpty(text)) {
-			valueArea.setText(JsonOutUtils.formatJson(JSON.parse(text).toString()));
+			String target;
+			try {
+				target = JsonOutUtils.formatJson(JSON.parse(text).toString());
+			}catch (@SuppressWarnings("unused") Exception e) {
+				target = JsonOutUtils.formatJson(text);
+			}
+			valueArea.setText(target);
 		}
 	}
 	

@@ -149,19 +149,14 @@ public class RedisUtils {
 			String type = jedis.type(key);
 			switch (type) {
 			case "string":
-				System.out.println("String");
 				return jedis.get(key);
 			case "list":
-				System.out.println("list");
 				return JSON.toJSONString(jedis.lrange(key, 0L, 5000L));
 			case "set":
-				System.out.println("set");
 				return JSON.toJSONString(jedis.smembers(key));
 			case "zset":
-				System.out.println("zset");
 				return JSON.toJSONString(jedis.zrange(key, 0L, 5000L));
 			case "hash":
-				System.out.println("hash");
 				return JSON.toJSONString(jedis.hgetAll(key));
 			default:
 				return null;
