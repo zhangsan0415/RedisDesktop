@@ -47,11 +47,9 @@ public class RedisUtils {
 	}
 	
 	public static boolean connect(String uniqueId) {
-		Jedis jedis = getJedis(uniqueId);
 		try {
-			jedis.connect();
-			putConnectedJedis(uniqueId, jedis);
-			return true;
+			Jedis jedis = getJedis(uniqueId);
+			return jedis.isConnected();
 		}catch (Exception e) {
 			ContextHolder.logError(e);
 			return false;
@@ -67,7 +65,10 @@ public class RedisUtils {
 	}
 	
 	private static Jedis getJedis(String uniqueId) {
-		return ConnectedJedis.get(uniqueId) != null? ConnectedJedis.get(uniqueId):buildJedis(uniqueId);
+		Jedis jedis = ConnectedJedis.get(uniqueId) != null? ConnectedJedis.get(uniqueId):buildJedis(uniqueId);
+		jedis.connect();
+		putConnectedJedis(uniqueId, jedis);
+		return jedis;
 	}
 	
 	private static Jedis buildJedis(String uniqueId) {
@@ -110,10 +111,8 @@ public class RedisUtils {
 	}
 
 	public static boolean selectDb(String uniqueId, int dbIndex) {
-		Jedis jedis = getJedis(uniqueId);
 		try {
-			jedis.connect();
-			putConnectedJedis(uniqueId, jedis);
+			Jedis jedis = getJedis(uniqueId);
 			jedis.select(dbIndex);
 			return true;
 		}catch (Exception e) {
@@ -124,10 +123,8 @@ public class RedisUtils {
 	}
 	
 	public static ScanResult<String> scanDb(String uniqueId,int dbIndex,String key,String cursor) {
-		Jedis jedis = getJedis(uniqueId);
 		try {
-			jedis.connect();
-			putConnectedJedis(uniqueId, jedis);
+			Jedis jedis = getJedis(uniqueId);
 			jedis.select(dbIndex);
 			cursor = StringUtils.isEmpty(cursor)?ScanParams.SCAN_POINTER_START:cursor;
 			ScanParams params = new ScanParams();
@@ -141,10 +138,8 @@ public class RedisUtils {
 	}
 	
 	public static String get(String uniqueId,int dbIndex,String key) {
-		Jedis jedis = getJedis(uniqueId);
 		try {
-			jedis.connect();
-			putConnectedJedis(uniqueId, jedis);
+			Jedis jedis = getJedis(uniqueId);
 			jedis.select(dbIndex);
 			String type = jedis.type(key);
 			switch (type) {
@@ -185,5 +180,15 @@ public class RedisUtils {
 	
 	public static void releaseConnectedJedis() {
 		ConnectedJedis.forEach((k,v) -> v.close());
+	}
+
+	public static void flushDb(String uniqueId, int dbIndex) {
+		try {
+			Jedis jedis = getJedis(uniqueId);
+			jedis.select(dbIndex);
+			jedis.flushDB();
+		}catch (Exception e) {
+			ContextHolder.logError(e);
+		}
 	}
 }

@@ -40,6 +40,8 @@ public class KeyPanel extends JPanel implements ActionListener{
 	private static final String B1_STR = "查询{value}";
 	private static final String B2_STR = "查询{keys}";
 	private static final String B3_STR = "展示所有{keys}";
+	private static final String B4_STR = "清空数据库";
+	
 	
 	private static KeyTree keyTree = new KeyTree();
 	
@@ -90,17 +92,19 @@ public class KeyPanel extends JPanel implements ActionListener{
 		JButton b1 = new JButton(B1_STR);
 		JButton b2 = new JButton(B2_STR);
 		JButton b3 = new JButton(B3_STR);
+		JButton b4 = new JButton(B4_STR);
 		
 		b1.addActionListener(this);
 		b2.addActionListener(this);
 		b3.addActionListener(this);
-		
+		b4.addActionListener(this);
 		
 		p.add(label);
 		p.add(queryField);
 		p.add(b1);
 		p.add(b2);
 		p.add(b3);
+		p.add(b4);
 		return p;
 	}
 	
@@ -137,6 +141,11 @@ public class KeyPanel extends JPanel implements ActionListener{
 			this.clearPanel();
 			keyTree.setOpType(Constants.OP_ALL);
 			this.showAllKeys(dbEntity,Constants.REDIS_ALL_PATTERN);
+		}else if(B4_STR.equals(command)){
+			if(DialogUtils.warnDialog(this, "确定要清空所有数据么？")) {
+				this.clearPanel();
+				RedisUtils.flushDb(dbEntity.getUniqueId(),dbEntity.getDbIndex());
+			}
 		}else {
 			String text = queryField.getText();
 			if(StringUtils.isEmpty(text)) {
@@ -157,7 +166,6 @@ public class KeyPanel extends JPanel implements ActionListener{
 	private void showAllKeys(DataBaseEntity dbEntity,String query) {
 		ScanResult<String> keyResult = RedisUtils.scanDb(dbEntity.getUniqueId(), dbEntity.getDbIndex(), query,null);
 		
-		System.out.println(keyResult.getCursor());
 		keyTree.addNodes(keyResult.getResult(), keyResult.getCursor());
 	}
 	

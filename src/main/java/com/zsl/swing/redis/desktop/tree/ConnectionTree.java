@@ -220,10 +220,11 @@ public class ConnectionTree extends JTree{
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
 			
-			TreePath path = e.getPath();
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
-			Entity entity = (Entity)node.getUserObject();
-			System.out.println(entity.getShowName());
+			/*
+			 * TreePath path = e.getPath(); DefaultMutableTreeNode node =
+			 * (DefaultMutableTreeNode)path.getLastPathComponent(); Entity entity =
+			 * (Entity)node.getUserObject();
+			 */
 		}
 	}
 
