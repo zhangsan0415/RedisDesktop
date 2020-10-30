@@ -5,6 +5,6 @@
 
 
 ## LICENSE
-jedis[LICENSE](https://raw.githubusercontent.com/redis/jedis/master/LICENSE.txt)
-lettuce-core[license-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
-fastjson[license-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
+* jedis[LICENSE](https://raw.githubusercontent.com/redis/jedis/master/LICENSE.txt)
+* lettuce-core[license-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
+* fastjson[license-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
