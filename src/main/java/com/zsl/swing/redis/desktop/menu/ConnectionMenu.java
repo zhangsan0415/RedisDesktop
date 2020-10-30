@@ -10,6 +10,7 @@ import com.zsl.swing.redis.desktop.action.ShowConnectionInfoAction;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
+import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
 
 /**
  * 
@@ -24,20 +25,24 @@ public class ConnectionMenu extends BaseMenu<ConnectionEntity> implements Action
 	public static final String M1_STR = "连接信息";
 	public static final String M2_STR = "连接";
 	public static final String M3_STR = "删除";
+	public static final String M4_STR = "打开控制台";
 	
 	private JMenuItem m1 = new JMenuItem(M1_STR);
 	private JMenuItem m2 = new JMenuItem(M2_STR);
 	private JMenuItem m3 = new JMenuItem(M3_STR);
+	private JMenuItem m4 = new JMenuItem(M4_STR);
 	
 	public ConnectionMenu(ConnectionTreeNode<ConnectionEntity> treeNode) {
 		super(treeNode);
-		add(m1);
 		add(m2);
 		add(m3);
+		add(m4);
+		add(m1);
 		
 		m1.addActionListener(new ShowConnectionInfoAction(treeNode));
 		m2.addActionListener(new ConnectServerAction(treeNode));
 		m3.addActionListener(this);
+		m4.addActionListener(this);
 	}
 	
 	@Override
@@ -45,6 +50,8 @@ public class ConnectionMenu extends BaseMenu<ConnectionEntity> implements Action
 		String command = e.getActionCommand();
 		if(M3_STR.equals(command)) {
 			ContextHolder.getTree().removeNode(treeNode);
+		}else if(M4_STR.equals(command)) {
+			new RedisConsoleWindow(treeNode.getUserObject());
 		}
 	}
 }

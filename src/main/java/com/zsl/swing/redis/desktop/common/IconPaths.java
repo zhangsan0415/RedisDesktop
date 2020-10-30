@@ -8,15 +8,33 @@ package com.zsl.swing.redis.desktop.common;
  */
 public class IconPaths {
 
-	private IconPaths() {}
-	
+	/**
+	 * 设置图标
+	 */
 	public final static String SET_ICON = "/image/set_icon.jpg";
 	
+	/**
+	 * 连接图标
+	 */
 	public final static String CONN_ICON = "/image/connect.png";
 	
+	/**
+	 * Redis DB图标
+	 */
 	public final static String DB_ICON = "/image/redis_db.png";
 	
+	/**
+	 * 目录图标
+	 */
 	public final static String DB_DIR_ICON = "/image/db_directory.png";
 	
+	/**
+	 * key 图标
+	 */
 	public final static String DB_KEY_ICON = "/image/key.jpg";
+	
+	/**
+	 * 控制台 图标
+	 */
+	public final static String REDIS_CONSOLE_ICON = "/image/redis_console.jpg";
 }

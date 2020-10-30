@@ -1,5 +1,6 @@
 package com.zsl.swing.redis.desktop.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,8 @@ import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Protocol;
+import redis.clients.jedis.Protocol.Command;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
@@ -62,6 +65,26 @@ public class RedisUtils {
 			jedis.close();
 			ConnectedJedis.remove(uniqueId);
 		}
+	}
+	
+	public static String execute(String target,String uniqueId) {
+		String[] split = target.split(" ");
+		Command command = Protocol.Command.valueOf(split[0].toUpperCase());
+		
+		List<String> list = new ArrayList<>(split.length);
+		for(int i=1;i<split.length;i++) {
+			if(!StringUtils.isEmpty(split[i])) {
+				list.add(split[i]);
+			}
+		}
+		try {
+			Jedis jedis = getJedis(uniqueId);
+			jedis.getClient().sendCommand(command, list.toArray(new String[list.size()]));
+			return jedis.getClient().getStatusCodeReply();
+		}catch (Exception e) {
+			return e.getMessage();
+		}
+		
 	}
 	
 	private static Jedis getJedis(String uniqueId) {
