@@ -51,5 +51,16 @@ public class Constants {
 	public static final int OP_KEYS = 2;
 	
 	public static final int OP_VALUE = 3;
+	
+	/**
+	 * Redis成功时返回的编码
+	 */
+	public static final String OK = "OK";
+
+	/**
+	 * 默认一次加载的REDIS KEY的数量
+	 */
+	public static final int DEFAULT_SCAN_COUNT = 50;
+
 
 }
