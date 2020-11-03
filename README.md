@@ -3,6 +3,11 @@
 ## 可执行jar:
 * [RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/RedisDestktop/RedisDesktop-1.0.0-jar-with-dependencies.jar);
 
+## 更新日志
+
+### 2020-10-30
+* 添加Redis控制台功能
+* 控制台clear清屏功能
 
 ## LICENSE
 * jedis[LICENSE.txt](https://raw.githubusercontent.com/redis/jedis/master/LICENSE.txt)
