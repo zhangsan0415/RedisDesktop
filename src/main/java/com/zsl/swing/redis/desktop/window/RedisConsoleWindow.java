@@ -10,6 +10,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.IconPaths;
@@ -30,11 +32,15 @@ public class RedisConsoleWindow extends BaseWindow{
 	
 	private static String CONNECTION_PREFIX;
 	
+	private DocumentAction documentAction = this.new DocumentAction();
+	
 	private ConnectionEntity connectionEntity;
 	
 	private JTextArea console = new JTextArea();
 	
 	private RedisConsoleWindow consoleWindow = this;
+	
+	private static String TEMP_TEXT;
 	
 	public RedisConsoleWindow(ConnectionEntity connEntity) {
 		super(connEntity.getShowName());
@@ -61,6 +67,7 @@ public class RedisConsoleWindow extends BaseWindow{
 		
 		console.setLineWrap(true);
 		console.addKeyListener(new EnterKeyAction());
+		console.getDocument().addDocumentListener(documentAction);
 		
 		this.addWindowListener(new WindowAdapter() {
 			@Override
@@ -90,12 +97,16 @@ public class RedisConsoleWindow extends BaseWindow{
 		console.append("\n");
 		console.append(CONNECTION_PREFIX);
 		console.requestFocus();
+		
+		TEMP_TEXT = console.getText();
+		
 	}
 	
 	private void nextBeginConnect() {
 		console.setEditable(true);
 		console.append(CONNECTION_PREFIX);
 		console.requestFocus();
+		TEMP_TEXT = console.getText();
 	}
 	
 	
@@ -116,8 +127,10 @@ public class RedisConsoleWindow extends BaseWindow{
 					}
 					
 					if(CLEAR_COMMAND.equalsIgnoreCase(target)) {
+						console.getDocument().removeDocumentListener(documentAction);
 						console.setText(null);
 						consoleWindow.nextBeginConnect();
+						console.getDocument().addDocumentListener(documentAction);
 						return;
 					}
 					
@@ -131,6 +144,44 @@ public class RedisConsoleWindow extends BaseWindow{
 				}
 			}
 		}
+	}
+	
+	private void clearConsole() {
+		console.getDocument().removeDocumentListener(documentAction);
+		console.setText(null);
+		console.getDocument().addDocumentListener(documentAction);
+	}
+	
+	private class DocumentAction implements DocumentListener{
+		
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			this.removeUpdate(e);
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			String newText = console.getText();
+			if(!newText.startsWith(TEMP_TEXT)) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				
+				new Thread(() -> {
+					clearConsole();
+					console.append(TEMP_TEXT);
+					console.requestFocus();
+				}).start();
+			}
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+		
 	}
 
 }

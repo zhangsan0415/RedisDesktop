@@ -23,9 +23,11 @@ import redis.clients.jedis.GeoRadiusResponse;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Protocol;
 import redis.clients.jedis.Protocol.Command;
+import redis.clients.jedis.Protocol.Keyword;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.util.SafeEncoder;
+import redis.clients.jedis.util.Slowlog;
 
 /**
  * 
@@ -295,6 +297,18 @@ public class RedisUtils {
 				String statusCodeReply = client.getStatusCodeReply();
 				client.setDb(index);
 				return statusCodeReply;
+			case SLOWLOG:
+				String keyword = list.get(0);
+				if(Keyword.GET.name().equalsIgnoreCase(keyword)) {
+					List<Slowlog> from = Slowlog.from(client.getObjectMultiBulkReply());
+					return JSON.toJSONString(from);
+				}else if(Keyword.RESET.name().equalsIgnoreCase(keyword)) {
+					return client.getBulkReply();
+				}else if(Keyword.LEN.name().equals(keyword)) {
+					return String.valueOf(client.getIntegerReply());
+				}else {
+					return "not support!";
+				}
 			case MGET:
 			case HMGET:
 			case HVALS:
