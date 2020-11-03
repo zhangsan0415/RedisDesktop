@@ -3,6 +3,7 @@ package com.zsl.swing.redis.desktop.tree;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JTree;
@@ -78,6 +79,21 @@ public class KeyTree extends JTree{
 			keyEntity.setNextCursor(nextCursor);
 			rootNode.add(new KeyTreeNode<>(keyEntity));
 		}
+	}
+	
+	public void removeNodeByShowName(String showName) {
+		@SuppressWarnings("rawtypes")
+		Enumeration children = rootNode.children();
+		while(children.hasMoreElements()) {
+			@SuppressWarnings("unchecked")
+			KeyTreeNode<Entity> nextElement = (KeyTreeNode<Entity>)children.nextElement();
+			
+			if(nextElement.getUserObject().getShowName().equals(showName)) {
+				nextElement.removeFromParent();
+			}
+		}
+		
+		this.updateUI();
 	}
 	
 	public void clearNodes() {

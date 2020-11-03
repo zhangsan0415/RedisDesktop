@@ -52,6 +52,8 @@ public class Constants {
 	
 	public static final int OP_VALUE = 3;
 	
+	public static final int OP_DEL = 4;
+	
 	/**
 	 * Redis成功时返回的编码
 	 */

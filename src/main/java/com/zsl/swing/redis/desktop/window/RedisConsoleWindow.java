@@ -16,6 +16,7 @@ import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 import com.zsl.swing.redis.desktop.utils.CommonUtils;
 import com.zsl.swing.redis.desktop.utils.IconUtils;
+import com.zsl.swing.redis.desktop.utils.JsonOutUtils;
 import com.zsl.swing.redis.desktop.utils.RedisUtils;
 import com.zsl.swing.redis.desktop.utils.StringUtils;
 
@@ -122,7 +123,7 @@ public class RedisConsoleWindow extends BaseWindow{
 					
 					String result = RedisUtils.execute(target, connectionEntity.getUniqueId());
 					
-					console.append(result);
+					console.append(JsonOutUtils.formatJson(result));
 					consoleWindow.beginConnect();
 				} catch (Exception e1) {
 					console.append(e1.getMessage());

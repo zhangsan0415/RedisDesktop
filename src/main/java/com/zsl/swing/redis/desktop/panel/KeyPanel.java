@@ -41,6 +41,8 @@ public class KeyPanel extends JPanel implements ActionListener{
 	private static final String B2_STR = "查询{keys}";
 	private static final String B3_STR = "展示所有{keys}";
 	private static final String B4_STR = "清空数据库";
+	private static final String B5_STR = "删除{key}";
+	
 	
 	
 	private static KeyTree keyTree = new KeyTree();
@@ -93,11 +95,13 @@ public class KeyPanel extends JPanel implements ActionListener{
 		JButton b2 = new JButton(B2_STR);
 		JButton b3 = new JButton(B3_STR);
 		JButton b4 = new JButton(B4_STR);
+		JButton b5 = new JButton(B5_STR);
 		
 		b1.addActionListener(this);
 		b2.addActionListener(this);
 		b3.addActionListener(this);
 		b4.addActionListener(this);
+		b5.addActionListener(this);
 		
 		p.add(label);
 		p.add(queryField);
@@ -105,6 +109,7 @@ public class KeyPanel extends JPanel implements ActionListener{
 		p.add(b2);
 		p.add(b3);
 		p.add(b4);
+		p.add(b5);
 		return p;
 	}
 	
@@ -152,6 +157,7 @@ public class KeyPanel extends JPanel implements ActionListener{
 				return;
 			}
 			
+			text = text.trim();
 			if(B1_STR.equals(command)) {
 				keyTree.setOpType(Constants.OP_VALUE);
 				this.showKeyValue(dbEntity, text);
@@ -159,23 +165,38 @@ public class KeyPanel extends JPanel implements ActionListener{
 				this.clearResult();
 				keyTree.setOpType(Constants.OP_KEYS);
 				this.showAllKeys(dbEntity, text);
+			}else if(B5_STR.equals(command)) {
+				keyTree.setOpType(Constants.OP_DEL);
+				this.delKey(dbEntity,text);
 			}
 		}
 	}
 	
+	private void delKey(DataBaseEntity dbEntity, String query) {
+		boolean del = RedisUtils.del(dbEntity.getUniqueId(), dbEntity.getDbIndex(), query);
+		if(del) {
+			valueArea.setText(null);
+			queryField.setText(null);
+			keyTree.removeNodeByShowName(query);
+			DialogUtils.msgDialog(this, "删除成功！");
+		}else {
+			DialogUtils.errorDialog(this,"删除失败！");
+		}
+	}
+
 	private void showAllKeys(DataBaseEntity dbEntity,String query) {
 		ScanResult<String> keyResult = RedisUtils.scanDb(dbEntity.getUniqueId(), dbEntity.getDbIndex(), query,null);
 		
 		keyTree.addNodes(keyResult.getResult(), keyResult.getCursor());
 	}
 	
-	private void showKeyValue(DataBaseEntity dbEntity,String text) {
+	private void showKeyValue(DataBaseEntity dbEntity,String query) {
 		this.clearResult();
-		String result = RedisUtils.get(dbEntity.getUniqueId(), dbEntity.getDbIndex(), text);
+		String result = RedisUtils.get(dbEntity.getUniqueId(), dbEntity.getDbIndex(), query);
 		
 		if(!StringUtils.isEmpty(result)) {
 			List<String> nodeList = new ArrayList<>(1);
-			nodeList.add(text);
+			nodeList.add(query);
 			keyTree.addNodes(nodeList, ScanParams.SCAN_POINTER_START);
 			KeyPanel.setValueText(result);
 		}
