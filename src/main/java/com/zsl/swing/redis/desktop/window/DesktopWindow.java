@@ -25,7 +25,7 @@ public class DesktopWindow extends BaseWindow{
 	private static final int DIVIDER_SIZE = 20;
 	
 	public DesktopWindow() {
-		super("RedisDesktop","/image/redis_db.png");
+		super("RedisDesktop","/image/desktop.png");
 		
 		setSize(Constants.FRAME_W, Constants.FRAME_H);
 		setLocation(0, Constants.FRAME_H/2);
