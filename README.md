@@ -1,10 +1,16 @@
 # RedisDesktop----java实现Redis桌面工具
 
 ## 可执行jar:
+* [2020-11-18 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/20201118/RedisDesktop-1.0.0-jar-with-dependencies.jar)
 * [2020-11-03 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/untagged-98a8096d55f1439893b9/RedisDesktop-1.0.0-jar-with-dependencies.jar)
 * [2020-10-30 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/RedisDestktop/RedisDesktop-1.0.0-jar-with-dependencies.jar);
 
 ## 更新日志
+
+### 2020-11-18
+*	修改控制台数据库切换不了的BUG
+*	添加当前所处数据库展示
+*	调整界面大小
 
 ### 2020-11-03
 *	1、优化查询keys（scan）命令无匹配返回
