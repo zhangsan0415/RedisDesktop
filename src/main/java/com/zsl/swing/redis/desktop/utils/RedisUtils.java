@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
 
 import redis.clients.jedis.BuilderFactory;
 import redis.clients.jedis.Client;
@@ -42,6 +43,8 @@ public class RedisUtils {
 	
 	private static final ConcurrentHashMap<String, Jedis> ConnectedJedis = new ConcurrentHashMap<>(32);
 	
+	private static int DB_NUM = 0;
+	
 	public static boolean testConn(ConnectionEntity entity) {
 		Jedis jedis = null;
 		try {
@@ -65,6 +68,20 @@ public class RedisUtils {
 		}catch (Exception e) {
 			ContextHolder.logError(e);
 			return false;
+		}finally {
+			close(jedis);
+		}
+	}
+	
+	public static int dbCount(String uniqueId) {
+		Jedis jedis = null;
+		try {
+			jedis = buildJedis(uniqueId);
+//			List<String> configGet = jedis.configGet("databases");
+			return 16;
+		} catch (Exception e) {
+			ContextHolder.logError(e);
+			return 16;
 		}finally {
 			close(jedis);
 		}
@@ -252,6 +269,7 @@ public class RedisUtils {
 		Jedis jedis = null;
 		try {
 			jedis = buildJedis(uniqueId);
+			jedis.select(DB_NUM);
 			Client client = jedis.getClient();
 			client.sendCommand(command, list.toArray(new String[list.size()]));
 			
@@ -287,7 +305,8 @@ public class RedisUtils {
 			case DUMP:
 			case MEMORY:
 			case XADD:
-				return SafeEncoder.encode(client.getBinaryBulkReply());
+				byte[] reply = client.getBinaryBulkReply();
+				return CollectionUtils.isEmpty(reply)?null:SafeEncoder.encode(reply);
 			case QUIT:
 				String quitReturn = client.getStatusCodeReply();
 				client.disconnect();
@@ -295,7 +314,13 @@ public class RedisUtils {
 			case SELECT:
 				int index = Integer.parseInt(list.get(0));
 				String statusCodeReply = client.getStatusCodeReply();
-				client.setDb(index);
+				
+				ConnectionEntity connEntity = connectionMap.get(uniqueId);
+				if("OK".equalsIgnoreCase(statusCodeReply)) {
+					DB_NUM = index;
+					client.setDb(index);
+					RedisConsoleWindow.setConnectPreffix(connEntity.getShowName(), connEntity.getHost(), list.get(0));
+				}
 				return statusCodeReply;
 			case SLOWLOG:
 				String keyword = list.get(0);
@@ -516,5 +541,9 @@ public class RedisUtils {
 			close(jedis);
 		}
 		
+	}
+	
+	public static void dbNumDefault() {
+		DB_NUM = 0;
 	}
 }

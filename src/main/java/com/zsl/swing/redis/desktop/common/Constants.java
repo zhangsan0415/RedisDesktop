@@ -22,12 +22,12 @@ public class Constants {
 	/**
 	 * 默认桌面窗口宽
 	 */
-	public static final int FRAME_W = CommonUtils.maxWidth();
+	public static final int FRAME_W = CommonUtils.maxWidth()*3/4;
 	
 	/**
 	 * 默认桌面空口高
 	 */
-	public static final int FRAME_H = CommonUtils.maxHeight()/2;
+	public static final int FRAME_H = CommonUtils.maxHeight()*4/5;
 	
 	public static final int CONNECTION_W = FRAME_W/2;
 	

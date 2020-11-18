@@ -32,6 +32,8 @@ public class RedisConsoleWindow extends BaseWindow{
 	
 	private static String CONNECTION_PREFIX;
 	
+	private static String PREFIX_PATTERN = "%s{%s}[%s]>";
+	
 	private DocumentAction documentAction = this.new DocumentAction();
 	
 	private ConnectionEntity connectionEntity;
@@ -44,7 +46,7 @@ public class RedisConsoleWindow extends BaseWindow{
 	
 	public RedisConsoleWindow(ConnectionEntity connEntity) {
 		super(connEntity.getShowName());
-		CONNECTION_PREFIX = new StringBuilder(connEntity.getShowName()).append("{").append(connEntity.getHost()).append("}").append(">").toString();
+		CONNECTION_PREFIX = String.format(PREFIX_PATTERN, connEntity.getShowName(),connEntity.getHost(),"0");
 
 		this.setIconImage(ICON_IMAGE);
 		this.connectionEntity = connEntity;
@@ -72,6 +74,7 @@ public class RedisConsoleWindow extends BaseWindow{
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				RedisUtils.dbNumDefault();
 				consoleWindow.dispose();
 			}
 		});
@@ -144,6 +147,10 @@ public class RedisConsoleWindow extends BaseWindow{
 				}
 			}
 		}
+	}
+	
+	public static void setConnectPreffix(String showName,String host,String dbNum) {
+		CONNECTION_PREFIX = String.format(PREFIX_PATTERN, showName,host,dbNum);
 	}
 	
 	private void clearConsole() {

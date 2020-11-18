@@ -11,4 +11,8 @@ public class CollectionUtils {
 		return c == null || c.isEmpty();
 	}
 
+	public static boolean isEmpty(byte[] reply) {
+		return reply == null || reply.length == 0;
+	}
+
 }
