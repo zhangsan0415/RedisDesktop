@@ -37,14 +37,8 @@ import redis.clients.jedis.util.Slowlog;
  *
  */
 public class RedisUtils {
-	
-	
 	private static final ConcurrentHashMap<String, ConnectionEntity> connectionMap = new ConcurrentHashMap<>(32);
-	
-	private static final ConcurrentHashMap<String, Jedis> ConnectedJedis = new ConcurrentHashMap<>(32);
-	
-	private static int DB_NUM = 0;
-	
+
 	public static boolean testConn(ConnectionEntity entity) {
 		Jedis jedis = null;
 		try {
@@ -77,7 +71,6 @@ public class RedisUtils {
 		Jedis jedis = null;
 		try {
 			jedis = buildJedis(uniqueId);
-//			List<String> configGet = jedis.configGet("databases");
 			return 16;
 		} catch (Exception e) {
 			ContextHolder.logError(e);
@@ -95,16 +88,20 @@ public class RedisUtils {
 	
 	private static Jedis buildJedis(String uniqueId) {
 		ConnectionEntity entity = connectionMap.get(uniqueId);
+		return buildJedis(entity);
 
+	}
+
+	private static Jedis buildJedis(ConnectionEntity entity){
 		Jedis jedis = new Jedis(entity.getHost(), entity.getPort());
-		
-		jedis.getClient().setConnectionTimeout(10000);
-		jedis.getClient().setSoTimeout(10000);
-		
+
+		jedis.getClient().setConnectionTimeout(5000);
+		jedis.getClient().setSoTimeout(5000);
+
 		if(!StringUtils.isEmpty(entity.getPassword())) {
 			jedis.getClient().setPassword(entity.getPassword());
 		}
-		
+
 		jedis.connect();
 		return jedis;
 	}
@@ -225,10 +222,6 @@ public class RedisUtils {
 		}
 	}
 	
-	public static void releaseConnectedJedis() {
-		ConnectedJedis.forEach((k,v) -> v.close());
-	}
-	
 	public static boolean del(String uniqueId,int dbIndex, String key) {
 		Jedis jedis = null;
 		try {
@@ -256,10 +249,16 @@ public class RedisUtils {
 		}
 	}
 	
-	public static String execute(String target,String uniqueId) {
+	public static String execute(String target,String uniqueId,int dbIndex) {
 		String[] split = target.split(" ");
-		Command command = Protocol.Command.valueOf(split[0].toUpperCase());
-		
+		Command command;
+
+		try{
+			command = Protocol.Command.valueOf(split[0].toUpperCase());
+		}catch (IllegalArgumentException e){
+			return "Unknown Command!";
+		}
+
 		List<String> list = new ArrayList<>(split.length);
 		for(int i=1;i<split.length;i++) {
 			if(!StringUtils.isEmpty(split[i])) {
@@ -268,8 +267,9 @@ public class RedisUtils {
 		}
 		Jedis jedis = null;
 		try {
-			jedis = buildJedis(uniqueId);
-			jedis.select(DB_NUM);
+			ConnectionEntity entity = connectionMap.get(uniqueId);
+			jedis = buildJedis(entity);
+			jedis.select(dbIndex);
 			Client client = jedis.getClient();
 			client.sendCommand(command, list.toArray(new String[list.size()]));
 			
@@ -315,11 +315,9 @@ public class RedisUtils {
 				int index = Integer.parseInt(list.get(0));
 				String statusCodeReply = client.getStatusCodeReply();
 				
-				ConnectionEntity connEntity = connectionMap.get(uniqueId);
 				if("OK".equalsIgnoreCase(statusCodeReply)) {
-					DB_NUM = index;
 					client.setDb(index);
-					RedisConsoleWindow.setConnectPrefix(connEntity.getShowName(), connEntity.getHost(), list.get(0));
+					RedisConsoleWindow.putDbIndex(index);
 				}
 				return statusCodeReply;
 			case SLOWLOG:
@@ -497,15 +495,15 @@ public class RedisUtils {
 			case SYNC:
 			case SUBSCRIBE:
 			case PSUBSCRIBE:
-				return null;
+				return "Now Unsupported!";
 			case SCAN:
 			case SSCAN:
 				List<Object> result = client.getObjectMultiBulkReply();
-				byte[] newcursor = (byte[]) result.get(0);
+				byte[] newCursor = (byte[]) result.get(0);
 			    @SuppressWarnings("unchecked") List<byte[]> rawResults = (List<byte[]>) result.get(1);
 			    
 			    JSONObject jsonObject = new JSONObject(4);
-			    jsonObject.put("cursor",SafeEncoder.encode(newcursor));
+			    jsonObject.put("cursor",SafeEncoder.encode(newCursor));
 			    jsonObject.put("result", BuilderFactory.STRING_SET.build(rawResults));
 			    return jsonObject.toJSONString();
 			case HSCAN:
@@ -532,7 +530,7 @@ public class RedisUtils {
 			case TIME:
 				return JSON.toJSONString(client.getMultiBulkReply());
 			default:
-				return "not support!";
+				return "Now Unsupported!";
 			}
 		}catch (Exception e) {
 			ContextHolder.logError(e);
@@ -543,7 +541,4 @@ public class RedisUtils {
 		
 	}
 	
-	public static void dbNumDefault() {
-		DB_NUM = 0;
-	}
 }

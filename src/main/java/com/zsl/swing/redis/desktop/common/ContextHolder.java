@@ -1,13 +1,12 @@
 package com.zsl.swing.redis.desktop.common;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-
+import com.zsl.swing.redis.desktop.area.ErrorLogArea;
 import com.zsl.swing.redis.desktop.panel.KeyPanel;
 import com.zsl.swing.redis.desktop.tree.ConnectionTree;
+
+import javax.swing.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * 
@@ -22,7 +21,7 @@ public class ContextHolder {
 	/**
 	 * 日志区域
 	 */
-	private static JTextArea logArea = new JTextArea();
+	private static JTextArea logArea = new ErrorLogArea();
 	
 	/**
 	 * 连接树

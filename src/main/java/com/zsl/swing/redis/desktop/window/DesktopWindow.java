@@ -60,7 +60,6 @@ public class DesktopWindow extends BaseWindow{
 		    @Override
 			public void windowClosing(WindowEvent e) {
 		    	ContextHolder.getTree().saveConnectionsToFile();
-		    	RedisUtils.releaseConnectedJedis();
 		    }
 			
 		});

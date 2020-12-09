@@ -73,5 +73,4 @@ public class ConnectionEntity implements Entity{
 	public void setUniqueId(String uniqueId) {
 		this.uniqueId = uniqueId;
 	}
-	
 }

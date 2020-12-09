@@ -57,21 +57,15 @@ public class KeyPanel extends JPanel implements ActionListener{
 		this.add(initNorthPanel(),BorderLayout.NORTH);
 		
 		this.add(this.initCenterPanel(),BorderLayout.CENTER);
-		
-		/*
-		 * this.add(new JScrollPane(keyTree),BorderLayout.WEST);
-		 * 
-		 * this.add(new JScrollPane(valueArea),BorderLayout.CENTER);
-		 */
 	}
 	
 	private JSplitPane initCenterPanel() {
+		valueArea.setEditable(false);
 		JSplitPane target = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		target.setContinuousLayout(true);
 		target.setOneTouchExpandable(false);
 		target.setDividerSize(3);
 		target.setDividerLocation(Constants.FRAME_W/5);
-		
 		target.setLeftComponent(new JScrollPane(keyTree));
 		target.setRightComponent(new JScrollPane(valueArea));
 		return target;
