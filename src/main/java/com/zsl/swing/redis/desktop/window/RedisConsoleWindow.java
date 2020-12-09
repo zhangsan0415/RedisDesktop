@@ -1,26 +1,19 @@
 package com.zsl.swing.redis.desktop.window;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Image;
+import com.zsl.swing.redis.desktop.common.Constants;
+import com.zsl.swing.redis.desktop.common.IconPaths;
+import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.utils.*;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import com.zsl.swing.redis.desktop.common.Constants;
-import com.zsl.swing.redis.desktop.common.IconPaths;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
-import com.zsl.swing.redis.desktop.utils.CommonUtils;
-import com.zsl.swing.redis.desktop.utils.IconUtils;
-import com.zsl.swing.redis.desktop.utils.JsonOutUtils;
-import com.zsl.swing.redis.desktop.utils.RedisUtils;
-import com.zsl.swing.redis.desktop.utils.StringUtils;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RedisConsoleWindow extends BaseWindow{
 
@@ -29,27 +22,32 @@ public class RedisConsoleWindow extends BaseWindow{
 	private static final Image ICON_IMAGE = IconUtils.getScaleImage(IconPaths.REDIS_CONSOLE_ICON, 40, 40);
 	
 	private static final String CLEAR_COMMAND = "clear";
-	
-	private static String CONNECTION_PREFIX;
+
+	private static final ConcurrentHashMap<Thread,String> map = new ConcurrentHashMap<>(32);
 	
 	private static String PREFIX_PATTERN = "%s{%s}[%s]>";
 	
-	private DocumentAction documentAction = this.new DocumentAction();
+	private DocumentAction documentAction;
+
+	private EnterKeyAction enterKeyAction;
 	
 	private ConnectionEntity connectionEntity;
 	
 	private JTextArea console = new JTextArea();
 	
-	private RedisConsoleWindow consoleWindow = this;
-	
-	private static String TEMP_TEXT;
+	private String tempText;
 	
 	public RedisConsoleWindow(ConnectionEntity connEntity) {
 		super(connEntity.getShowName());
-		CONNECTION_PREFIX = String.format(PREFIX_PATTERN, connEntity.getShowName(),connEntity.getHost(),"0");
+		this.connectionEntity = connEntity;
+
+		String defaultPrefix = String.format(PREFIX_PATTERN, connEntity.getShowName(),connEntity.getHost(),"0");
+		map.put(Thread.currentThread(),defaultPrefix);
+
+		this.documentAction = new DocumentAction(this,this.console);
+		this.enterKeyAction = new EnterKeyAction(this,this.console,this.documentAction,connEntity);
 
 		this.setIconImage(ICON_IMAGE);
-		this.connectionEntity = connEntity;
 		this.setSize(Constants.FRAME_W, Constants.FRAME_H);
 		
 		int x = CommonUtils.maxWidth()/2 - Constants.FRAME_W/2;
@@ -68,14 +66,14 @@ public class RedisConsoleWindow extends BaseWindow{
 		console.setCaretColor(Color.WHITE);
 		
 		console.setLineWrap(true);
-		console.addKeyListener(new EnterKeyAction());
 		console.getDocument().addDocumentListener(documentAction);
-		
+		console.addKeyListener(this.enterKeyAction);
+
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				RedisUtils.dbNumDefault();
-				consoleWindow.dispose();
+				RedisConsoleWindow.this.dispose();
 			}
 		});
 	}
@@ -98,68 +96,92 @@ public class RedisConsoleWindow extends BaseWindow{
 	private void beginConnect() {
 		console.setEditable(true);
 		console.append("\n");
-		console.append(CONNECTION_PREFIX);
+		console.append(map.get(Thread.currentThread()));
 		console.requestFocus();
 		
-		TEMP_TEXT = console.getText();
+		this.tempText = console.getText();
 		
 	}
 	
 	private void nextBeginConnect() {
 		console.setEditable(true);
-		console.append(CONNECTION_PREFIX);
+		console.append(map.get(Thread.currentThread()));
 		console.requestFocus();
-		TEMP_TEXT = console.getText();
+		this.tempText = console.getText();
 	}
 	
 	
 	private class EnterKeyAction extends KeyAdapter{
+
+		private RedisConsoleWindow redisConsoleWindow;
+
+		private JTextArea redisConsole;
+
+		private DocumentAction textDocumentAction;
+
+		private ConnectionEntity entity;
+
+		public EnterKeyAction(RedisConsoleWindow redisConsoleWindow,JTextArea redisConsole,DocumentAction textDocumentAction,ConnectionEntity entity){
+			this.redisConsole = redisConsole;
+			this.redisConsoleWindow = redisConsoleWindow;
+			this.textDocumentAction = textDocumentAction;
+			this.entity = entity;
+		}
 		
 		@Override
 		public void keyTyped(KeyEvent e) {
 			if(e.getKeyChar() == KeyEvent.VK_ENTER) {
 				try {
-					console.setEditable(false);
+					this.redisConsole.setEditable(false);
 					
-					String text = console.getText();
-					String target = text.substring(text.lastIndexOf(CONNECTION_PREFIX) + CONNECTION_PREFIX.length()).trim();
+					String text = this.redisConsole.getText();
+					String target = text.substring(text.lastIndexOf(map.get(Thread.currentThread())) + map.get(Thread.currentThread()).length()).trim();
 					
 					if(StringUtils.isEmpty(target)) {
-						consoleWindow.nextBeginConnect();
+						this.redisConsoleWindow.nextBeginConnect();
 						return;
 					}
 					
 					if(CLEAR_COMMAND.equalsIgnoreCase(target)) {
-						console.getDocument().removeDocumentListener(documentAction);
-						console.setText(null);
-						consoleWindow.nextBeginConnect();
-						console.getDocument().addDocumentListener(documentAction);
+						this.redisConsole.getDocument().removeDocumentListener(this.textDocumentAction);
+						this.redisConsole.setText(null);
+						this.redisConsoleWindow.nextBeginConnect();
+						this.redisConsole.getDocument().addDocumentListener(this.textDocumentAction);
 						return;
 					}
 					
-					String result = RedisUtils.execute(target, connectionEntity.getUniqueId());
-					
-					console.append(JsonOutUtils.formatJson(result));
-					consoleWindow.beginConnect();
+					String result = RedisUtils.execute(target, this.entity.getUniqueId());
+
+					this.redisConsole.append(JsonOutUtils.formatJson(result));
+					this.redisConsoleWindow.beginConnect();
 				} catch (Exception e1) {
-					console.append(e1.getMessage());
-					consoleWindow.beginConnect();
+					this.redisConsole.append(e1.getMessage());
+					this.redisConsoleWindow.beginConnect();
 				}
 			}
 		}
 	}
 	
-	public static void setConnectPreffix(String showName,String host,String dbNum) {
-		CONNECTION_PREFIX = String.format(PREFIX_PATTERN, showName,host,dbNum);
+	public static void setConnectPrefix(String showName, String host, String dbNum) {
+		map.put(Thread.currentThread(),String.format(PREFIX_PATTERN, showName,host,dbNum));
 	}
 	
 	private void clearConsole() {
-		console.getDocument().removeDocumentListener(documentAction);
+		console.getDocument().removeDocumentListener(this.documentAction);
 		console.setText(null);
-		console.getDocument().addDocumentListener(documentAction);
+		console.getDocument().addDocumentListener(this.documentAction);
 	}
 	
 	private class DocumentAction implements DocumentListener{
+
+		private RedisConsoleWindow consoleWindow;
+
+		private JTextArea console;
+
+		public DocumentAction(RedisConsoleWindow consoleWindow,JTextArea console){
+			this.consoleWindow = consoleWindow;
+			this.console = console;
+		}
 		
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -168,18 +190,18 @@ public class RedisConsoleWindow extends BaseWindow{
 
 		@Override
 		public void removeUpdate(DocumentEvent e) {
-			String newText = console.getText();
-			if(!newText.startsWith(TEMP_TEXT)) {
+			String newText = this.console.getText();
+			if(!newText.startsWith(this.consoleWindow.tempText)) {
 				try {
-					Thread.sleep(10);
+					Thread.sleep(100);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 				
 				new Thread(() -> {
 					clearConsole();
-					console.append(TEMP_TEXT);
-					console.requestFocus();
+					this.console.append(this.consoleWindow.tempText);
+					this.console.requestFocus();
 				}).start();
 			}
 		}

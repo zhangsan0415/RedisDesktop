@@ -319,7 +319,7 @@ public class RedisUtils {
 				if("OK".equalsIgnoreCase(statusCodeReply)) {
 					DB_NUM = index;
 					client.setDb(index);
-					RedisConsoleWindow.setConnectPreffix(connEntity.getShowName(), connEntity.getHost(), list.get(0));
+					RedisConsoleWindow.setConnectPrefix(connEntity.getShowName(), connEntity.getHost(), list.get(0));
 				}
 				return statusCodeReply;
 			case SLOWLOG:
