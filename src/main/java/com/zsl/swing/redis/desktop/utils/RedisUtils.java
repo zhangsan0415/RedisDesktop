@@ -71,10 +71,11 @@ public class RedisUtils {
 		Jedis jedis = null;
 		try {
 			jedis = buildJedis(uniqueId);
-			return 16;
+			List<String> databases = jedis.configGet("databases");
+			return Integer.parseInt(databases.get(1));
 		} catch (Exception e) {
 			ContextHolder.logError(e);
-			return 16;
+			return Constants.DB_COUNT;
 		}finally {
 			close(jedis);
 		}

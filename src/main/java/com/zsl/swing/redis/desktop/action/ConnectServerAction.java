@@ -44,20 +44,20 @@ public class ConnectServerAction implements ActionListener{
 	
 	
 	private void showDbList(ConnectionEntity connectionEntity) {
-		TreePath nodePath = new TreePath(treeNode);
-
 		treeNode.removeAllChildren();
-		ConnectionTreeNode<DataBaseEntity> childNode = null;
-		for(int i = 0;i<Constants.DB_COUNT;i++) {
+
+		int dbCount = RedisUtils.dbCount(connectionEntity.getUniqueId());
+		for(int i = 0;i<dbCount;i++) {
 			DataBaseEntity dataBaseEntity = new DataBaseEntity();
 			dataBaseEntity.setDbIndex(i);
 			dataBaseEntity.setShowName(String.valueOf(i));
 			dataBaseEntity.setUniqueId(connectionEntity.getUniqueId());
-			
-			childNode = new ConnectionTreeNode<>(dataBaseEntity);
+
+			ConnectionTreeNode<DataBaseEntity> childNode = new ConnectionTreeNode<>(dataBaseEntity);
 			treeNode.add(childNode);
 		}
-		
+
+		TreePath nodePath = new TreePath(treeNode);
 		ContextHolder.getTree().refreshTree(nodePath);
 	}
 
