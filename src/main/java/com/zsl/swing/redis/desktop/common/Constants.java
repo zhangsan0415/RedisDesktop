@@ -14,6 +14,8 @@ public class Constants {
 	 * 默认DB数量
 	 */
 	public static final int DB_COUNT = 16;
+
+	public static final int MAX_DB_COUNT = 32;
 	
 	/**
 	 * 默认桌面窗口宽

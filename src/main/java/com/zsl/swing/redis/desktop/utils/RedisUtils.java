@@ -72,7 +72,8 @@ public class RedisUtils {
 		try {
 			jedis = buildJedis(uniqueId);
 			List<String> databases = jedis.configGet("databases");
-			return Integer.parseInt(databases.get(1));
+			int dbCount = Integer.parseInt(databases.get(1));
+			return Math.min(dbCount,Constants.MAX_DB_COUNT);
 		} catch (Exception e) {
 			ContextHolder.logError(e);
 			return Constants.DB_COUNT;
