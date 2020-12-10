@@ -10,10 +10,6 @@ import com.zsl.swing.redis.desktop.utils.CommonUtils;
  */
 public class Constants {
 
-	public static final String WIDTH = "width";
-	
-	public static final String HEIGHT = "height";
-	
 	/**
 	 * 默认DB数量
 	 */
@@ -22,7 +18,7 @@ public class Constants {
 	/**
 	 * 默认桌面窗口宽
 	 */
-	public static final int FRAME_W = CommonUtils.maxWidth()*3/4;
+	public static final int FRAME_W = CommonUtils.maxWidth()*7/8;
 	
 	/**
 	 * 默认桌面空口高
@@ -33,16 +29,7 @@ public class Constants {
 	
 	public static final int CONNECTION_H = FRAME_H/2;
 	
-	/**
-	 * 默认connection树面版的宽度
-	 */
-	public static final int TREE_PANEL_WIDTH = FRAME_W/5;
-	
-	
-	public static final double DIVIDER_RADIO_MIN = 0.25d;
-	
-	public static final double DIVIDER_RADIO_MAX = 0.75d;
-	
+
 	public static final String REDIS_ALL_PATTERN = "*";
 	
 	

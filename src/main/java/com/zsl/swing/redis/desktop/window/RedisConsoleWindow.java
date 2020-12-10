@@ -63,7 +63,7 @@ public class RedisConsoleWindow extends BaseWindow{
 	private void initConsole() {
 		console.setBackground(Color.CYAN);
 		console.setCaretColor(Color.WHITE);
-		console.setFont(new Font("宋体", Font.BOLD, 25));
+		console.setFont(new Font("宋体", Font.BOLD, 12));
 		console.setLineWrap(true);
 		console.setText(null);
 		console.append("Connecting to ");

@@ -17,7 +17,7 @@ import java.awt.*;
 public class RedisDesktop {
 
 	public static void main(String[] args) {
-		FontUtils.setDefaultFont(new Font("宋体", Font.BOLD, 25));
+		FontUtils.setDefaultFont(new Font("宋体", Font.BOLD, 12));
 		SwingUtilities.invokeLater(() -> ContextHolder.setMainWindow(new DesktopWindow()));
 	}
 }

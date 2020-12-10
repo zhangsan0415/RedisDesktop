@@ -1,6 +1,7 @@
 # RedisDesktop----java实现Redis桌面工具
 
 ## 可执行jar:
+* [2020-12-10 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/ZSLREDISGUI-20201210/RedisDesktop-1.0.0-jar-with-dependencies.jar)
 * [2020-11-18 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/20201118/RedisDesktop-1.0.0-jar-with-dependencies.jar)
 * [2020-11-03 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/untagged-98a8096d55f1439893b9/RedisDesktop-1.0.0-jar-with-dependencies.jar)
 * [2020-10-30 RedisDesktop-1.0.0-jar-with-dependencies.jar](https://github.com/zhangsan0415/RedisDesktop/releases/download/RedisDestktop/RedisDesktop-1.0.0-jar-with-dependencies.jar);
