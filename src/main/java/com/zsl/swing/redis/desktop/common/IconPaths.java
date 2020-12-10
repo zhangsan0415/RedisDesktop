@@ -9,6 +9,11 @@ package com.zsl.swing.redis.desktop.common;
 public class IconPaths {
 
 	/**
+	 * 桌面主程图标
+	 */
+	public final static String DESKTOP_ICON = "/image/desktop.png";
+
+	/**
 	 * 设置图标
 	 */
 	public final static String SET_ICON = "/image/set_icon.jpg";

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zsl.swing.redis.desktop.common.CommandMsg;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
@@ -258,7 +259,7 @@ public class RedisUtils {
 		try{
 			command = Protocol.Command.valueOf(split[0].toUpperCase());
 		}catch (IllegalArgumentException e){
-			return "Unknown Command!";
+			return CommandMsg.UN_KNOW_COMMAND;
 		}
 
 		List<String> list = new ArrayList<>(split.length);
@@ -277,21 +278,11 @@ public class RedisUtils {
 			
 			switch (command) {
 			case PING:
-				if(list.isEmpty()) {
-					return client.getStatusCodeReply();
-				}else {
-					return SafeEncoder.encode(client.getBinaryBulkReply());
-				}
+				return list.isEmpty()?client.getStatusCodeReply():SafeEncoder.encode(client.getBinaryBulkReply());
 			case SPOP:
 			case SRANDMEMBER:
-				if(list.size() == 1) {
-					return SafeEncoder.encode(client.getBinaryBulkReply());
-				}else if(list.size() == 2) {
-					Set<String> keySet = BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
-					return JSON.toJSONString(keySet);
-				}else {
-					return null;
-				}
+				return list.size() == 1?SafeEncoder.encode(client.getBinaryBulkReply()):
+						(list.size() == 2?JSON.toJSONString(BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply())):CommandMsg.PARAM_NUM_ERROR);
 			case GET:
 			case RANDOMKEY:
 			case GETSET:
@@ -325,14 +316,13 @@ public class RedisUtils {
 			case SLOWLOG:
 				String keyword = list.get(0);
 				if(Keyword.GET.name().equalsIgnoreCase(keyword)) {
-					List<Slowlog> from = Slowlog.from(client.getObjectMultiBulkReply());
-					return JSON.toJSONString(from);
+					return JSON.toJSONString(Slowlog.from(client.getObjectMultiBulkReply()));
 				}else if(Keyword.RESET.name().equalsIgnoreCase(keyword)) {
 					return client.getBulkReply();
 				}else if(Keyword.LEN.name().equals(keyword)) {
 					return String.valueOf(client.getIntegerReply());
 				}else {
-					return "not support!";
+					return CommandMsg.NOW_UN_SUPPORT;
 				}
 			case MGET:
 			case HMGET:
@@ -409,6 +399,7 @@ public class RedisUtils {
 					Set<String> keySet = BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
 					return JSON.toJSONString(keySet);
 				}
+				return CommandMsg.PARAM_NUM_ERROR;
 			case KEYS:
 			case HKEYS:
 			case SMEMBERS:
@@ -494,10 +485,10 @@ public class RedisUtils {
 			case XDEL:
 			case XTRIM:
 				return String.valueOf(client.getIntegerReply());
-			case SYNC:
+			/*case SYNC:
 			case SUBSCRIBE:
 			case PSUBSCRIBE:
-				return "Now Unsupported!";
+				return CommandMsg.NOW_UN_SUPPORT;*/
 			case SCAN:
 			case SSCAN:
 				List<Object> result = client.getObjectMultiBulkReply();
@@ -532,7 +523,7 @@ public class RedisUtils {
 			case TIME:
 				return JSON.toJSONString(client.getMultiBulkReply());
 			default:
-				return "Now Unsupported!";
+				return CommandMsg.NOW_UN_SUPPORT;
 			}
 		}catch (Exception e) {
 			ContextHolder.logError(e);

@@ -10,6 +10,7 @@ import javax.swing.JSplitPane;
 
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
+import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.utils.CommonUtils;
 import com.zsl.swing.redis.desktop.utils.RedisUtils;
 
@@ -26,7 +27,7 @@ public class DesktopWindow extends BaseWindow{
 	private static final int DIVIDER_SIZE = 20;
 	
 	public DesktopWindow() {
-		super("RedisDesktop","/image/desktop.png");
+		super("RedisDesktop", IconPaths.DESKTOP_ICON);
 		
 		setSize(Constants.FRAME_W, Constants.FRAME_H);
 		

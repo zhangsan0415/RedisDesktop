@@ -3,7 +3,10 @@ package com.zsl.swing.redis.desktop.window;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
-import com.zsl.swing.redis.desktop.utils.*;
+import com.zsl.swing.redis.desktop.utils.CommonUtils;
+import com.zsl.swing.redis.desktop.utils.JsonOutUtils;
+import com.zsl.swing.redis.desktop.utils.RedisUtils;
+import com.zsl.swing.redis.desktop.utils.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -23,15 +26,15 @@ public class RedisConsoleWindow extends BaseWindow{
 
 	private static final ConcurrentHashMap<Thread,Integer> dbIndexMap = new ConcurrentHashMap<>(32);
 
-	private static String PREFIX_PATTERN = "%s{%s}[%s]>";
+	private static final String PREFIX_PATTERN = "%s{%s}[%s]>";
 
-	private JTextArea console = new JTextArea();
+	private final JTextArea console = new JTextArea();
 
-	private DocumentAction documentAction = new DocumentAction();
+	private final DocumentAction documentAction = new DocumentAction();
 
-	private EnterKeyAction enterKeyAction = new EnterKeyAction();
+	private final EnterKeyAction enterKeyAction = new EnterKeyAction();
 	
-	private ConnectionEntity connectionEntity;
+	private final ConnectionEntity connectionEntity;
 
 	private String tempText;
 
@@ -167,7 +170,7 @@ public class RedisConsoleWindow extends BaseWindow{
 			if(!newText.startsWith(RedisConsoleWindow.this.tempText)) {
 				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e1) {
+				} catch (InterruptedException ignored) {
 				}
 				
 				new Thread(() -> {
