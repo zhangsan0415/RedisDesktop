@@ -17,7 +17,6 @@ import javax.swing.tree.TreePath;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.menu.ConnectionMenu;
-import com.zsl.swing.redis.desktop.menu.RootMenu;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 import com.zsl.swing.redis.desktop.model.DataBaseEntity;
 import com.zsl.swing.redis.desktop.model.Entity;
@@ -53,7 +52,7 @@ public class ConnectionTree extends JTree{
 	
 	public ConnectionTree() {
 		super(rootNode);
-		
+
 		this.setRootVisible(true);
 
 		this.initConnectionNodes();
@@ -202,7 +201,7 @@ public class ConnectionTree extends JTree{
 			ConnectionNodeType nodeType = (ConnectionNodeType)entity.nodeType();
 			switch (nodeType) {
 			case ROOT:
-				new RootMenu(node).show(tree, e.getX(), e.getY());
+//				new RootMenu(node).show(tree, e.getX(), e.getY());
 				break;
 			case CONNECTION:
 				new ConnectionMenu(node).show(tree, e.getX(), e.getY());

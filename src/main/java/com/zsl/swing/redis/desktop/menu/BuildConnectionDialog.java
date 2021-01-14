@@ -22,7 +22,7 @@ import com.zsl.swing.redis.desktop.window.ConnectionInfoDialog;
  * @description connections节点，也即根节点对应的菜单
  *
  */
-public class RootMenu extends BaseMenu<RootEntity> implements ActionListener{
+public class BuildConnectionDialog {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -30,32 +30,19 @@ public class RootMenu extends BaseMenu<RootEntity> implements ActionListener{
 	private static final String B2_STR = "测试连接";
 	
 
-	private JMenuItem newItem = new JMenuItem("新建");
+//	private JMenuItem newItem = new JMenuItem("新建");
 	
-	public RootMenu(ConnectionTreeNode<RootEntity> treeNode) {
-		super(treeNode);
-		
-		add(newItem);
-		
-		newItem.addActionListener(this);
+	public BuildConnectionDialog() {
+		this.buildBtnPanel();
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		ConnectionInfoPanel connectionInfoPanel = new ConnectionInfoPanel();
+
+	private void buildBtnPanel() {
 		JPanel btnPanel = new JPanel();
-		
+		ConnectionInfoPanel connectionInfoPanel = new ConnectionInfoPanel();
+
 		ConnectionInfoDialog dialog = new ConnectionInfoDialog(connectionInfoPanel, btnPanel, "新建连接");
-		
-		this.buildBtnPanel(connectionInfoPanel, dialog, btnPanel);
-		dialog.showDialog();
-		
-//		final RootMenuNewWindow newConnWindow = new RootMenuNewWindow();
-//		newConnWindow.initWindow();
-	}
-	
-	private JPanel buildBtnPanel(ConnectionInfoPanel connectionInfoPanel,ConnectionInfoDialog dialog,JPanel btnPanel) {
+
 		JButton b1 = new JButton(B2_STR);
 		JButton b2 = new JButton(B1_STR);
 
@@ -65,8 +52,8 @@ public class RootMenu extends BaseMenu<RootEntity> implements ActionListener{
 		
 		btnPanel.add(b1);
 		btnPanel.add(b2);
-		
-		return btnPanel;
+
+		dialog.showDialog();
 	}
 	
 	

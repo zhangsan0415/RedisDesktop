@@ -3,10 +3,7 @@ package com.zsl.swing.redis.desktop.window;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
-import com.zsl.swing.redis.desktop.utils.CommonUtils;
-import com.zsl.swing.redis.desktop.utils.JsonOutUtils;
-import com.zsl.swing.redis.desktop.utils.RedisUtils;
-import com.zsl.swing.redis.desktop.utils.StringUtils;
+import com.zsl.swing.redis.desktop.utils.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -66,7 +63,7 @@ public class RedisConsoleWindow extends BaseWindow{
 	private void initConsole() {
 		console.setBackground(Color.CYAN);
 		console.setCaretColor(Color.WHITE);
-		console.setFont(new Font("宋体", Font.BOLD, 12));
+		console.setFont(FontUtils.defaultFont(FontUtils.fontSizeOverJdk()));
 		console.setLineWrap(true);
 		console.setText(null);
 		console.append("Connecting to ");
@@ -79,7 +76,7 @@ public class RedisConsoleWindow extends BaseWindow{
 
 		dbIndexMap.put(Thread.currentThread(),0);
 		if(connect) {
-			buildPrefix();
+			this.buildPrefix();
 			this.beginConnect();
 			console.getDocument().addDocumentListener(this.documentAction);
 			console.addKeyListener(this.enterKeyAction);
@@ -151,7 +148,7 @@ public class RedisConsoleWindow extends BaseWindow{
 		dbIndexMap.put(Thread.currentThread(),dbIndex);
 	}
 
-	private void clearConsole() {
+	public void clearConsole() {
 		console.getDocument().removeDocumentListener(this.documentAction);
 		console.setText(null);
 		console.getDocument().addDocumentListener(this.documentAction);

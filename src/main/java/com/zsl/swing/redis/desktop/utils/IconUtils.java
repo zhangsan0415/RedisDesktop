@@ -22,6 +22,11 @@ public class IconUtils {
 		Image targetImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		return new ImageIcon(targetImage);
 	}
+
+	public static ImageIcon getImageIcon(String file){
+		URL resource = IconUtils.class.getResource(file);
+		return new ImageIcon(resource);
+	}
 	
 	public static Image getScaleImage(String imgPath,int width,int height) {
 		ImageIcon imgIcon = new ImageIcon(IconUtils.class.getResource(imgPath));

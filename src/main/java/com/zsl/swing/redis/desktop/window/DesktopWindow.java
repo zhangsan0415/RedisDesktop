@@ -1,18 +1,16 @@
 package com.zsl.swing.redis.desktop.window;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.common.IconPaths;
+import com.zsl.swing.redis.desktop.menu.BuildConnectionDialog;
 import com.zsl.swing.redis.desktop.utils.CommonUtils;
-import com.zsl.swing.redis.desktop.utils.RedisUtils;
+import com.zsl.swing.redis.desktop.utils.IconUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * 
@@ -24,7 +22,7 @@ public class DesktopWindow extends BaseWindow{
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final int DIVIDER_SIZE = 20;
+	private static final int DIVIDER_SIZE = 10;
 	
 	public DesktopWindow() {
 		super("RedisDesktop", IconPaths.DESKTOP_ICON);
@@ -35,23 +33,26 @@ public class DesktopWindow extends BaseWindow{
 		int y = CommonUtils.maxHeight()/2 - Constants.FRAME_H/2;
 		setLocation(x,y);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
+
 		//连接面版
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setContinuousLayout(true);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerSize(DIVIDER_SIZE);
-		splitPane.setDividerLocation(Constants.FRAME_W/8);
-		
+		splitPane.setDividerLocation(Constants.FRAME_W/7);
+
 		JScrollPane left = new JScrollPane(ContextHolder.getTree());
 		JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
 		splitPane.setLeftComponent(left);
 		splitPane.setRightComponent(right);
-		
-		setContentPane(splitPane);
-		
+
+//		this.setContentPane(splitPane);
+
+		JToolBar toolBar = this.buildToolBar();
+		this.getContentPane().add(toolBar,BorderLayout.NORTH);
+		this.getContentPane().add(splitPane,BorderLayout.CENTER);
+
 		this.buildRightPane(right);
 
 		setVisible(true);
@@ -65,6 +66,20 @@ public class DesktopWindow extends BaseWindow{
 			
 		});
 		
+	}
+
+	private JToolBar buildToolBar(){
+		JToolBar toolBar = new JToolBar();
+		JButton create = new JButton(newImgIcon());
+		create.addActionListener(event -> {
+			new BuildConnectionDialog();
+		});
+		toolBar.add(create);
+		return toolBar;
+	}
+
+	private ImageIcon newImgIcon(){
+		return IconUtils.getScaleImageIcon(IconPaths.CREATE_NEW_ICON,20,20);
 	}
 	
 	private void buildRightPane(JSplitPane root) {

@@ -42,4 +42,9 @@ public class IconPaths {
 	 * 控制台 图标
 	 */
 	public final static String REDIS_CONSOLE_ICON = "/image/redis_console.jpg";
+
+	/**
+	 * 新建图标
+	 */
+	public final static String CREATE_NEW_ICON = "/image/create_new.jpg";
 }

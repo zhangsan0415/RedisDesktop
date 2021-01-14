@@ -2,6 +2,7 @@ package com.zsl.swing.redis.desktop;
 
 import javax.swing.SwingUtilities;
 
+import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.utils.FontUtils;
 import com.zsl.swing.redis.desktop.window.DesktopWindow;
@@ -17,7 +18,12 @@ import java.awt.*;
 public class RedisDesktop {
 
 	public static void main(String[] args) {
-		FontUtils.setDefaultFont(new Font("宋体", Font.BOLD, 12));
+		System.out.println(System.getProperty("java.version"));
+
+		Font font = FontUtils.defaultFont(FontUtils.fontSizeOverJdk());
+
+		System.out.println(font);
+		FontUtils.setDefaultFont(font);
 		SwingUtilities.invokeLater(() -> ContextHolder.setMainWindow(new DesktopWindow()));
 	}
 }

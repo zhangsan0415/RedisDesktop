@@ -20,12 +20,12 @@ public class Constants {
 	/**
 	 * 默认桌面窗口宽
 	 */
-	public static final int FRAME_W = CommonUtils.maxWidth()*7/8;
+	public static final int FRAME_W = CommonUtils.maxWidth()*17/20;
 	
 	/**
 	 * 默认桌面空口高
 	 */
-	public static final int FRAME_H = CommonUtils.maxHeight()*4/5;
+	public static final int FRAME_H = CommonUtils.maxHeight()*17/20;
 	
 	public static final int CONNECTION_W = FRAME_W/2;
 	
@@ -52,6 +52,10 @@ public class Constants {
 	 * 默认一次加载的REDIS KEY的数量
 	 */
 	public static final int DEFAULT_SCAN_COUNT = 50;
+
+	public static final int FONT_SIZE_8 = 25;
+
+	public static final int FONT_SIZE_GT_8 = 12;
 
 
 }
