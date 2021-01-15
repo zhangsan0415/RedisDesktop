@@ -1,7 +1,9 @@
 package com.zsl.swing.redis.desktop.action;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 import javax.swing.tree.TreePath;
 
@@ -20,45 +22,15 @@ import com.zsl.swing.redis.desktop.utils.RedisUtils;
  *
  */
 public class ConnectServerAction implements ActionListener{
-	
-	private ConnectionTreeNode<ConnectionEntity> treeNode;
-	
-	public ConnectServerAction(ConnectionTreeNode<ConnectionEntity> treeNode) {
-		this.treeNode = treeNode;
-	}
 
+	private Component parent;
+
+	public ConnectServerAction(Component c){
+		this.parent = c;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		ConnectionEntity connectionEntity = treeNode.getUserObject();
-		
-		
-		boolean testConn = RedisUtils.connect(connectionEntity.getUniqueId());
-		if(!testConn) {
-			DialogUtils.errorDialog("连接失败");
-			return;
-		}
-		
-		this.showDbList(connectionEntity);
+		ContextHolder.getTree().connect(parent);
 	}
-
-	
-	
-	private void showDbList(ConnectionEntity connectionEntity) {
-		treeNode.removeAllChildren();
-
-		int dbCount = RedisUtils.dbCount(connectionEntity.getUniqueId());
-		for(int i = 0;i<dbCount;i++) {
-			DataBaseEntity dataBaseEntity = new DataBaseEntity();
-			dataBaseEntity.setDbIndex(i);
-			dataBaseEntity.setShowName(String.valueOf(i));
-			dataBaseEntity.setUniqueId(connectionEntity.getUniqueId());
-
-			ConnectionTreeNode<DataBaseEntity> childNode = new ConnectionTreeNode<>(dataBaseEntity);
-			treeNode.add(childNode);
-		}
-
-		TreePath nodePath = new TreePath(treeNode);
-		ContextHolder.getTree().refreshTree(nodePath);
-	}
-
 }

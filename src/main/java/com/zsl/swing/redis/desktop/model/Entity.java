@@ -23,6 +23,8 @@ public interface Entity {
 	default boolean isDbNode() {
 		return nodeType() == ConnectionNodeType.DB;
 	}
+
+	default boolean isConnectionNode(){ return nodeType() == ConnectionNodeType.CONNECTION;}
 	
 	public static interface NodeType {
 		int getRow();

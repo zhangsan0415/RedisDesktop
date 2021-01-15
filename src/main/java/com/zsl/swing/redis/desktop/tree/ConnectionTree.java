@@ -5,6 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -14,6 +15,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import com.zsl.swing.redis.desktop.action.ConnectServerAction;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.menu.ConnectionMenu;
@@ -22,10 +24,7 @@ import com.zsl.swing.redis.desktop.model.DataBaseEntity;
 import com.zsl.swing.redis.desktop.model.Entity;
 import com.zsl.swing.redis.desktop.model.Entity.ConnectionNodeType;
 import com.zsl.swing.redis.desktop.model.RootEntity;
-import com.zsl.swing.redis.desktop.utils.CollectionUtils;
-import com.zsl.swing.redis.desktop.utils.FileUtils;
-import com.zsl.swing.redis.desktop.utils.IconUtils;
-import com.zsl.swing.redis.desktop.utils.RedisUtils;
+import com.zsl.swing.redis.desktop.utils.*;
 
 /**
  * 
@@ -111,6 +110,18 @@ public class ConnectionTree extends JTree{
 		
 		tree.refreshTree(new TreePath(rootNode));
 	}
+
+	public ConnectionTreeNode<ConnectionEntity> getSelectionConnectionNode(){
+		TreePath path = tree.getSelectionPath();
+		if(!Objects.isNull(path)){
+			ConnectionTreeNode<?> selectNode = (ConnectionTreeNode<?>) path.getLastPathComponent();
+			Entity entity = selectNode.getUserObject();
+			if(entity.isConnectionNode()){
+				return (ConnectionTreeNode<ConnectionEntity>) selectNode;
+			}
+		}
+		return null;
+	}
 	
 	public void removeNode(ConnectionTreeNode<ConnectionEntity> treeNode) {
 		DefaultTreeModel model = (DefaultTreeModel)this.getModel();
@@ -141,6 +152,38 @@ public class ConnectionTree extends JTree{
 		
 		Entity entity = selectedNode.getUserObject();
 		return entity.isDbNode()?(DataBaseEntity)entity:null;
+	}
+
+	public void connect(Component parent){
+		TreePath path = this.getSelectionPath();
+
+		ConnectionTreeNode<ConnectionEntity> selectNode = this.getSelectionConnectionNode();
+		if(Objects.isNull(selectNode)){
+			DialogUtils.errorDialog(parent,"请先选择连接！");
+			return;
+		}
+
+		ConnectionEntity connectionEntity = selectNode.getUserObject();
+		boolean testConn = RedisUtils.connect(connectionEntity.getUniqueId());
+		if(!testConn) {
+			DialogUtils.errorDialog("连接失败");
+			return;
+		}
+
+		selectNode.removeAllChildren();
+		int dbCount = RedisUtils.dbCount(connectionEntity.getUniqueId());
+		for(int i = 0;i<dbCount;i++) {
+			DataBaseEntity dataBaseEntity = new DataBaseEntity();
+			dataBaseEntity.setDbIndex(i);
+			dataBaseEntity.setShowName(String.valueOf(i));
+			dataBaseEntity.setUniqueId(connectionEntity.getUniqueId());
+
+			ConnectionTreeNode<DataBaseEntity> childNode = new ConnectionTreeNode<>(dataBaseEntity);
+			selectNode.add(childNode);
+		}
+
+		this.expandPath(path);
+		this.updateUI();
 	}
 	
 	
@@ -201,10 +244,7 @@ public class ConnectionTree extends JTree{
 			ConnectionNodeType nodeType = (ConnectionNodeType)entity.nodeType();
 			switch (nodeType) {
 			case ROOT:
-//				new RootMenu(node).show(tree, e.getX(), e.getY());
-				break;
 			case CONNECTION:
-				new ConnectionMenu(node).show(tree, e.getX(), e.getY());
 				break;
 			case DB:
 				DataBaseEntity dbEntity = (DataBaseEntity)entity;
@@ -212,18 +252,32 @@ public class ConnectionTree extends JTree{
 				break;
 			}
 		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(e.getClickCount() == 2){
+				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+				if(path == null) {
+					return;
+				}
+
+				@SuppressWarnings("rawtypes")
+				ConnectionTreeNode node = (ConnectionTreeNode)path.getLastPathComponent();
+				Entity entity = node.getUserObject();
+
+				if(entity.isConnectionNode() && !node.children().hasMoreElements()){
+					tree.connect(ContextHolder.getMainWindow());
+				}
+			}
+		}
+
 	}
 	
 	private class TreeSelectionAction implements TreeSelectionListener{
 
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
-			
-			/*
-			 * TreePath path = e.getPath(); DefaultMutableTreeNode node =
-			 * (DefaultMutableTreeNode)path.getLastPathComponent(); Entity entity =
-			 * (Entity)node.getUserObject();
-			 */
+			ContextHolder.getKeyPanel().clearPanel();
 		}
 	}
 

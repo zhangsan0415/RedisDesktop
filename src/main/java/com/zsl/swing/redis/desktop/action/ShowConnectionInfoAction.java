@@ -18,7 +18,7 @@ import com.zsl.swing.redis.desktop.window.ConnectionInfoDialog;
  * @description 展示连接配置信息
  *
  */
-public class ShowConnectionInfoAction implements ActionListener{
+public class ShowConnectionInfoAction{
 	private static final String B1_STR = "编辑";
 	private static final String B2_STR = "确定";
 
@@ -29,15 +29,9 @@ public class ShowConnectionInfoAction implements ActionListener{
 	public ShowConnectionInfoAction(DefaultMutableTreeNode treeNode) {
 		this.treeNode = treeNode;
 		connectionInfoPanel = new ConnectionInfoPanel();
+		this.showConnectionInfo();
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String command = e.getActionCommand();
-		if(ConnectionMenu.M1_STR.equals(command)) {
-			this.showConnectionInfo();
-		}
-	}
 
 	private void showConnectionInfo() {
 		ConnectionEntity entity = (ConnectionEntity)treeNode.getUserObject();

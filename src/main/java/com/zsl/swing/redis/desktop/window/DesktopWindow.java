@@ -1,9 +1,14 @@
 package com.zsl.swing.redis.desktop.window;
 
+import com.zsl.swing.redis.desktop.action.ConnectServerAction;
+import com.zsl.swing.redis.desktop.action.ConnectionDetailAction;
+import com.zsl.swing.redis.desktop.action.ConsoleOpenAction;
+import com.zsl.swing.redis.desktop.action.DeleteConnectionAction;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.menu.BuildConnectionDialog;
+import com.zsl.swing.redis.desktop.utils.ButtonUtils;
 import com.zsl.swing.redis.desktop.utils.CommonUtils;
 import com.zsl.swing.redis.desktop.utils.IconUtils;
 
@@ -70,18 +75,31 @@ public class DesktopWindow extends BaseWindow{
 
 	private JToolBar buildToolBar(){
 		JToolBar toolBar = new JToolBar();
-		JButton create = new JButton(newImgIcon());
-		create.addActionListener(event -> {
-			new BuildConnectionDialog();
-		});
+
+		JButton create = ButtonUtils.createNewToolBar();
+		create.addActionListener(event -> new BuildConnectionDialog());
+
+		JButton delete = ButtonUtils.deleteToolBar();
+		delete.addActionListener(new DeleteConnectionAction(this));
+
+		JButton detail = ButtonUtils.detailToolBar();
+		detail.addActionListener(new ConnectionDetailAction(this));
+
+		JButton console = ButtonUtils.consoleToolBar();
+		console.addActionListener(new ConsoleOpenAction(this));
+
+		JButton connect = ButtonUtils.connectToolBar();
+		connect.addActionListener(new ConnectServerAction(this));
+
 		toolBar.add(create);
+		toolBar.add(detail);
+		toolBar.add(connect);
+		toolBar.add(console);
+		toolBar.add(delete);
+
 		return toolBar;
 	}
 
-	private ImageIcon newImgIcon(){
-		return IconUtils.getScaleImageIcon(IconPaths.CREATE_NEW_ICON,20,20);
-	}
-	
 	private void buildRightPane(JSplitPane root) {
 		root.setContinuousLayout(true);
 		root.setOneTouchExpandable(true);

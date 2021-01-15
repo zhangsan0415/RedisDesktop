@@ -47,4 +47,24 @@ public class IconPaths {
 	 * 新建图标
 	 */
 	public final static String CREATE_NEW_ICON = "/image/create_new.jpg";
+
+	/**
+	 * 删除图标
+	 */
+	public final static String DELETE_ICON = "/image/delete.jpg";
+
+	/**
+	 * 查看详情图标
+	 */
+	public final static String DETAIL_ICON = "/image/detail.jpg";
+
+	/**
+	 * 控制台图标
+	 */
+    public static final String CONSOLE_ICON = "/image/console.jpg";
+
+	/**
+	 * 进行连接图标
+	 */
+	public static final String DO_CONNECT_ICON = "/image/DoConnect.jpg";
 }

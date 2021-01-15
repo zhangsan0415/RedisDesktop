@@ -29,9 +29,6 @@ public class BuildConnectionDialog {
 	private static final String B1_STR = "确定";
 	private static final String B2_STR = "测试连接";
 	
-
-//	private JMenuItem newItem = new JMenuItem("新建");
-	
 	public BuildConnectionDialog() {
 		this.buildBtnPanel();
 	}

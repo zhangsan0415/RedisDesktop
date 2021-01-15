@@ -29,4 +29,8 @@ public class DialogUtils {
 	public static boolean warnDialog(Component c,String msg) {
 		return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(c, msg,"警告",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
 	}
+
+    public static boolean confirmDialog(Component c,String msg) {
+		return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(c,msg,"确认",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+    }
 }
