@@ -1,7 +1,5 @@
 package com.zsl.swing.redis.desktop.utils;
 
-import com.zsl.swing.redis.desktop.common.Constants;
-
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -32,7 +30,28 @@ public class FontUtils {
     }
 
     public static int fontSizeOverJdk(){
-        return JAVA_VERSION.contains("1.8")? Constants.FONT_SIZE_8:Constants.FONT_SIZE_GT_8;
+        return JAVA_VERSION.contains("1.8")? FontForJDK8.fontSize():FontForJDK8.fontSize();
+    }
+
+    private static class FontForJDK8{
+        private static int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+
+        public static int fontSize(){
+            if(WIDTH <= 1366){
+                return 12;
+            }else if(WIDTH <=1440){
+                return 13;
+            }else if(WIDTH <= 1600){
+                return 14;
+            }else if(WIDTH <= 1920){
+                return 15;
+            }
+            return 16;
+        }
+    }
+
+    private static class FontForJDK11{
+        private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     }
 
 }
