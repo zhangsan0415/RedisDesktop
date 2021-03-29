@@ -58,4 +58,14 @@ public class Constants {
 	public static final int FONT_SIZE_GT_8 = 12;
 
 
+	/**
+	 * 面版操作
+	 */
+	public static final String QUERY = "Query";
+	public static final String QUERY_MATCH = "QueryMatch";
+	public static final String QUERY_ALL = "QueryAll";
+	public static final String FLUSH_DB = "FlushDB";
+	public static final String DELETE = "Delete";
+	public static final String DELETE_MATCH = "DeleteMatch";
+
 }

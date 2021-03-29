@@ -92,7 +92,14 @@ public class KeyTree extends JTree{
 				nextElement.removeFromParent();
 			}
 		}
-		
+
+		if(rootNode.children().hasMoreElements()){
+			KeyTreeNode<Entity> nextElement = (KeyTreeNode<Entity>)rootNode.children().nextElement();
+			if(nextElement.getUserObject().getShowName().equals(MORE_NODE_TEXT)){
+				nextElement.removeFromParent();
+			}
+		}
+
 		this.updateUI();
 	}
 	
@@ -100,8 +107,6 @@ public class KeyTree extends JTree{
 		rootNode.removeAllChildren();
 		this.updateUI();
 	}
-	
-	
 	
 	public void setOpType(int opType) {
 		this.opType = opType;

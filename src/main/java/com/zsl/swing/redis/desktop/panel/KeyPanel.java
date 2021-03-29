@@ -1,31 +1,23 @@
 package com.zsl.swing.redis.desktop.panel;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import com.alibaba.fastjson.JSON;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.DataBaseEntity;
 import com.zsl.swing.redis.desktop.tree.KeyTree;
-import com.zsl.swing.redis.desktop.utils.DialogUtils;
-import com.zsl.swing.redis.desktop.utils.JsonOutUtils;
-import com.zsl.swing.redis.desktop.utils.RedisUtils;
-import com.zsl.swing.redis.desktop.utils.StringUtils;
-
+import com.zsl.swing.redis.desktop.utils.*;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.zsl.swing.redis.desktop.common.Constants.*;
+
 
 /**
  * 
@@ -37,21 +29,20 @@ public class KeyPanel extends JPanel implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final String B1_STR = "查询{value}";
-	private static final String B2_STR = "查询{keys}";
-	private static final String B3_STR = "展示所有{keys}";
-	private static final String B4_STR = "清空数据库";
-	private static final String B5_STR = "删除{key}";
-	
-	
-	
 	private static KeyTree keyTree = new KeyTree();
 	
 	private static JTextArea valueArea = new JTextArea();
 	
 	private static JTextField queryField = new JTextField(40);
+
+	private static JComboBox<String> actionBox = new JComboBox<>();
 	
 	public KeyPanel() {
+		actionBox.addItem(QUERY);
+		actionBox.addItem(QUERY_MATCH);
+		actionBox.addItem(DELETE);
+		actionBox.addItem(DELETE_MATCH);
+
 		this.setLayout(new BorderLayout());
 		
 		this.add(initNorthPanel(),BorderLayout.NORTH);
@@ -84,26 +75,23 @@ public class KeyPanel extends JPanel implements ActionListener{
 	private JPanel initNorthPanel() {
 		JPanel p = new JPanel();
 		JLabel label = new JLabel("key:");
-		
-		JButton b1 = new JButton(B1_STR);
-		JButton b2 = new JButton(B2_STR);
-		JButton b3 = new JButton(B3_STR);
-		JButton b4 = new JButton(B4_STR);
-		JButton b5 = new JButton(B5_STR);
-		
-		b1.addActionListener(this);
-		b2.addActionListener(this);
-		b3.addActionListener(this);
-		b4.addActionListener(this);
-		b5.addActionListener(this);
-		
+
+		actionBox.addActionListener(this);
+
 		p.add(label);
 		p.add(queryField);
+		p.add(actionBox);
+
+		JButton b1 = new JButton(QUERY_ALL);
+		JButton b2 = new JButton(FLUSH_DB);
+
+		b1.addActionListener(this);
+		b2.addActionListener(this);
+
 		p.add(b1);
 		p.add(b2);
-		p.add(b3);
-		p.add(b4);
-		p.add(b5);
+
+		p.setBorder(BorderFactory.createTitledBorder("操作"));
 		return p;
 	}
 	
@@ -130,39 +118,74 @@ public class KeyPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		DataBaseEntity dbEntity = ContextHolder.getTree().getSelectedDbNode();
+
 		if(dbEntity == null) {
 			DialogUtils.msgDialog(this, "请先选择数据库！");
 			return;
 		}
-		
+
 		String command = e.getActionCommand();
-		if(B3_STR.equals(command)) {
+		if(QUERY_ALL.equals(command)){
 			this.clearPanel();
 			keyTree.setOpType(Constants.OP_ALL);
 			this.showAllKeys(dbEntity,Constants.REDIS_ALL_PATTERN);
-		}else if(B4_STR.equals(command)){
+			return;
+		}
+
+		if(FLUSH_DB.equals(command)){
 			if(DialogUtils.warnDialog(this, "确定要清空所有数据么？")) {
 				this.clearPanel();
 				RedisUtils.flushDb(dbEntity.getUniqueId(),dbEntity.getDbIndex());
 			}
-		}else {
-			String text = queryField.getText();
-			if(StringUtils.isEmpty(text)) {
-				return;
-			}
-			
-			text = text.trim();
-			if(B1_STR.equals(command)) {
+			return;
+		}
+
+		String selected = (String) actionBox.getSelectedItem();
+		String text = queryField.getText();
+		if(StringUtils.isEmpty(text)) {
+			return;
+		}
+
+		text = text.trim();
+		switch (selected){
+			case QUERY:
 				keyTree.setOpType(Constants.OP_VALUE);
 				this.showKeyValue(dbEntity, text);
-			}else if(B2_STR.equals(command)) {
+				break;
+			case QUERY_MATCH:
 				this.clearResult();
 				keyTree.setOpType(Constants.OP_KEYS);
 				this.showAllKeys(dbEntity, text);
-			}else if(B5_STR.equals(command)) {
-				keyTree.setOpType(Constants.OP_DEL);
-				this.delKey(dbEntity,text);
+				break;
+			case DELETE:
+				if(DialogUtils.warnDialog(this, "确定要删除么？")){
+					keyTree.setOpType(Constants.OP_DEL);
+					this.delKey(dbEntity,text);
+				}
+				break;
+			case DELETE_MATCH:
+				if(DialogUtils.warnDialog(this, "确定要删除么？")){
+					keyTree.setOpType(Constants.OP_DEL);
+					this.delKeyMatch(dbEntity,text);
+				}
+				break;
+			default:
+				break;
+
+		}
+	}
+
+	private void delKeyMatch(DataBaseEntity dbEntity,String text){
+		String uniqueId = dbEntity.getUniqueId();
+		int dbIndex = dbEntity.getDbIndex();
+		String[] keys = RedisUtils.keysMatch(uniqueId, dbIndex, text);
+		if(!CollectionUtils.isEmpty(keys)){
+			RedisUtils.delKeys(uniqueId,dbIndex,keys);
+			valueArea.setText(null);
+			for(String key:keys){
+				keyTree.removeNodeByShowName(key);
 			}
+			DialogUtils.msgDialog(this, "删除成功！");
 		}
 	}
 	
@@ -170,7 +193,6 @@ public class KeyPanel extends JPanel implements ActionListener{
 		boolean del = RedisUtils.del(dbEntity.getUniqueId(), dbEntity.getDbIndex(), query);
 		if(del) {
 			valueArea.setText(null);
-			queryField.setText(null);
 			keyTree.removeNodeByShowName(query);
 			DialogUtils.msgDialog(this, "删除成功！");
 		}else {

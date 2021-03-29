@@ -15,4 +15,10 @@ public class CollectionUtils {
 		return reply == null || reply.length == 0;
 	}
 
+
+	public static <T> boolean isEmpty(T[] arr){
+		return arr == null || arr.length == 0;
+	}
 }
+
+

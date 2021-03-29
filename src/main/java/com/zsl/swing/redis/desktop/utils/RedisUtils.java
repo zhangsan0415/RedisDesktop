@@ -224,6 +224,41 @@ public class RedisUtils {
 			close(jedis);
 		}
 	}
+
+	public static String[] keysMatch(String uniqueId,int dbIndex,String match){
+		Jedis jedis = null;
+		try {
+			jedis = buildJedis(uniqueId);
+			jedis.select(dbIndex);
+			Set<String> keys = jedis.keys("*" + match + "*");
+			if(!CollectionUtils.isEmpty(keys)){
+				return keys.stream().toArray(String[]::new);
+			}
+		}catch (Exception e) {
+			ContextHolder.logError(e);
+		} finally {
+			close(jedis);
+		}
+		return new String[0];
+	}
+
+	public static boolean delMatch(String uniqueId,int dbIndex, String match){
+		Jedis jedis = null;
+		try {
+			jedis = buildJedis(uniqueId);
+			jedis.select(dbIndex);
+			Set<String> keys = jedis.keys("*" + match + "*");
+			if(!CollectionUtils.isEmpty(keys)){
+				jedis.del(keys.stream().toArray(String[]::new));
+			}
+			return true;
+		}catch (Exception e) {
+			ContextHolder.logError(e);
+			return false;
+		} finally {
+			close(jedis);
+		}
+	}
 	
 	public static boolean del(String uniqueId,int dbIndex, String key) {
 		Jedis jedis = null;
@@ -234,6 +269,19 @@ public class RedisUtils {
 		}catch (Exception e) {
 			ContextHolder.logError(e);
 			return false;
+		} finally {
+			close(jedis);
+		}
+	}
+
+	public static void delKeys(String uniqueId,int dbIndex,String[] keys){
+		Jedis jedis = null;
+		try {
+			jedis = buildJedis(uniqueId);
+			jedis.select(dbIndex);
+			jedis.del(keys);
+		}catch (Exception e) {
+			ContextHolder.logError(e);
 		} finally {
 			close(jedis);
 		}
