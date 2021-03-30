@@ -41,17 +41,12 @@ public class RedisUtils {
 	private static final ConcurrentHashMap<String, ConnectionEntity> connectionMap = new ConcurrentHashMap<>(32);
 
 	public static boolean testConn(ConnectionEntity entity) {
-		Jedis jedis = null;
-		try {
-			jedis = new Jedis(entity.getHost(), entity.getPort());
-			String result = StringUtils.isEmpty(entity.getPassword())?jedis.ping(Constants.OK):jedis.auth(entity.getPassword());
+		try (Jedis jedis = new Jedis(entity.getHost(), entity.getPort())) {
+			String result = StringUtils.isEmpty(entity.getPassword()) ? jedis.ping(Constants.OK) : jedis.auth(entity.getPassword());
 			return Constants.OK.equalsIgnoreCase(result);
 		} catch (Exception e) {
 			ContextHolder.logError(e);
 			return false;
-		}finally {
-			if(jedis != null)
-				jedis.close();
 		}
 	}
 	
