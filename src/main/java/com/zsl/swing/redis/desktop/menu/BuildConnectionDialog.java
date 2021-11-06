@@ -5,13 +5,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
-import com.zsl.swing.redis.desktop.model.RootEntity;
 import com.zsl.swing.redis.desktop.panel.ConnectionInfoPanel;
-import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
 import com.zsl.swing.redis.desktop.utils.DialogUtils;
 import com.zsl.swing.redis.desktop.utils.RedisUtils;
 import com.zsl.swing.redis.desktop.window.ConnectionInfoDialog;
@@ -24,8 +21,6 @@ import com.zsl.swing.redis.desktop.window.ConnectionInfoDialog;
  */
 public class BuildConnectionDialog {
 
-	private static final long serialVersionUID = 1L;
-	
 	private static final String B1_STR = "确定";
 	private static final String B2_STR = "测试连接";
 	

@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.zsl.swing.redis.desktop.menu.ConnectionMenu;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 import com.zsl.swing.redis.desktop.panel.ConnectionInfoPanel;
 import com.zsl.swing.redis.desktop.window.ConnectionInfoDialog;

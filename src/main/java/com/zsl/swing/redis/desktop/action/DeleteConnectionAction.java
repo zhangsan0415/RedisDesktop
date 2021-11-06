@@ -1,17 +1,14 @@
 package com.zsl.swing.redis.desktop.action;
 
-import com.zsl.swing.redis.desktop.common.ContextHolder;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
-import com.zsl.swing.redis.desktop.model.Entity;
-import com.zsl.swing.redis.desktop.tree.ConnectionTree;
-import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
-import com.zsl.swing.redis.desktop.utils.DialogUtils;
-
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
+
+import com.zsl.swing.redis.desktop.common.ContextHolder;
+import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
+import com.zsl.swing.redis.desktop.utils.DialogUtils;
 
 public class DeleteConnectionAction implements ActionListener {
 

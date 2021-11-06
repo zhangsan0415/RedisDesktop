@@ -3,14 +3,8 @@ package com.zsl.swing.redis.desktop.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JMenuItem;
-
-import com.zsl.swing.redis.desktop.action.ConnectServerAction;
-import com.zsl.swing.redis.desktop.action.ShowConnectionInfoAction;
-import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
-import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
 
 /**
  * 
@@ -47,7 +41,7 @@ public class ConnectionMenu extends BaseMenu<ConnectionEntity> implements Action
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String command = e.getActionCommand();
+//		String command = e.getActionCommand();
 		/*if(M3_STR.equals(command)) {
 			ContextHolder.getTree().removeNode(treeNode);
 		}else *//*if(M4_STR.equals(command)) {

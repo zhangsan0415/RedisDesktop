@@ -1,13 +1,12 @@
 package com.zsl.swing.redis.desktop;
 
+import java.awt.Font;
+
 import javax.swing.SwingUtilities;
 
-import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.utils.FontUtils;
 import com.zsl.swing.redis.desktop.window.DesktopWindow;
-
-import java.awt.*;
 
 /**
  * 

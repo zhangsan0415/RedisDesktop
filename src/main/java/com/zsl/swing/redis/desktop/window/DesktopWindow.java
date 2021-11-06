@@ -1,5 +1,16 @@
 package com.zsl.swing.redis.desktop.window;
 
+import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+
 import com.zsl.swing.redis.desktop.action.ConnectServerAction;
 import com.zsl.swing.redis.desktop.action.ConnectionDetailAction;
 import com.zsl.swing.redis.desktop.action.ConsoleOpenAction;
@@ -10,12 +21,6 @@ import com.zsl.swing.redis.desktop.common.IconPaths;
 import com.zsl.swing.redis.desktop.menu.BuildConnectionDialog;
 import com.zsl.swing.redis.desktop.utils.ButtonUtils;
 import com.zsl.swing.redis.desktop.utils.CommonUtils;
-import com.zsl.swing.redis.desktop.utils.IconUtils;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * 

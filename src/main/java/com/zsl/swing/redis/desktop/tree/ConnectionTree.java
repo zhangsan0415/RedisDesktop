@@ -15,16 +15,18 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import com.zsl.swing.redis.desktop.action.ConnectServerAction;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.common.IconPaths;
-import com.zsl.swing.redis.desktop.menu.ConnectionMenu;
 import com.zsl.swing.redis.desktop.model.ConnectionEntity;
 import com.zsl.swing.redis.desktop.model.DataBaseEntity;
 import com.zsl.swing.redis.desktop.model.Entity;
 import com.zsl.swing.redis.desktop.model.Entity.ConnectionNodeType;
 import com.zsl.swing.redis.desktop.model.RootEntity;
-import com.zsl.swing.redis.desktop.utils.*;
+import com.zsl.swing.redis.desktop.utils.CollectionUtils;
+import com.zsl.swing.redis.desktop.utils.DialogUtils;
+import com.zsl.swing.redis.desktop.utils.FileUtils;
+import com.zsl.swing.redis.desktop.utils.IconUtils;
+import com.zsl.swing.redis.desktop.utils.RedisUtils;
 
 /**
  * 
@@ -111,6 +113,7 @@ public class ConnectionTree extends JTree{
 		tree.refreshTree(new TreePath(rootNode));
 	}
 
+	@SuppressWarnings("unchecked")
 	public ConnectionTreeNode<ConnectionEntity> getSelectionConnectionNode(){
 		TreePath path = tree.getSelectionPath();
 		if(!Objects.isNull(path)){
@@ -226,7 +229,6 @@ public class ConnectionTree extends JTree{
 	private class TreeMouseClickAction extends MouseAdapter{
 		
 		@Override
-		@SuppressWarnings("unchecked")
 		public void mousePressed(MouseEvent e) {
 			TreePath path = tree.getPathForLocation(e.getX(), e.getY());
 			if(path == null) {

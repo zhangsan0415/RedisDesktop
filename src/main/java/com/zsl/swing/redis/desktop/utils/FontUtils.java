@@ -1,9 +1,11 @@
 package com.zsl.swing.redis.desktop.utils;
 
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.Enumeration;
+
+import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 /**
  * 统一字体工具
@@ -50,8 +52,5 @@ public class FontUtils {
         }
     }
 
-    private static class FontForJDK11{
-        private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    }
 
 }

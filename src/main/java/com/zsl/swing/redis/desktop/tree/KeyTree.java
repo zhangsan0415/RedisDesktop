@@ -94,6 +94,7 @@ public class KeyTree extends JTree{
 		}
 
 		if(rootNode.children().hasMoreElements()){
+			@SuppressWarnings("unchecked")
 			KeyTreeNode<Entity> nextElement = (KeyTreeNode<Entity>)rootNode.children().nextElement();
 			if(nextElement.getUserObject().getShowName().equals(MORE_NODE_TEXT)){
 				nextElement.removeFromParent();

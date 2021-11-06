@@ -1,13 +1,25 @@
 package com.zsl.swing.redis.desktop.area;
 
-import com.zsl.swing.redis.desktop.utils.StringUtils;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
+
+import com.zsl.swing.redis.desktop.utils.StringUtils;
 
 public class ErrorLogArea extends JTextArea implements ActionListener {
 
-    private static final String B1_STR = "清空日志";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final String B1_STR = "清空日志";
 
     private MouseListener mouseListener = new MouseAdapter() {
 
