@@ -18,11 +18,7 @@ public class RedisDesktop {
 
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("java.version"));
-
-		Font font = FontUtils.defaultFont(FontUtils.fontSizeOverJdk());
-
-		System.out.println(font);
-		FontUtils.setDefaultFont(font);
+		FontUtils.setDefaultFont();
 		SwingUtilities.invokeLater(() -> ContextHolder.setMainWindow(new DesktopWindow()));
 	}
 }

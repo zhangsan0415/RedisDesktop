@@ -11,8 +11,10 @@ import javax.swing.plaf.FontUIResource;
  * 统一字体工具
  */
 public class FontUtils {
-
-    private static final String JAVA_VERSION = System.getProperty("java.version");
+	
+	public static void setDefaultFont() {
+		setDefaultFont(defaultFont());
+	}
 
     public static void setDefaultFont(Font font){
 
@@ -27,30 +29,29 @@ public class FontUtils {
         }
     }
 
-    public static Font defaultFont(int fontSize){
-        return new Font("宋体",Font.BOLD,fontSize);
+    public static Font defaultFont() {
+    	int width = Toolkit.getDefaultToolkit().getScreenSize().width, fontSize;
+    	switch (width) {
+		case 1366:
+			fontSize = 12;
+			break;
+		case 1440:
+			fontSize = 13;
+			break;
+		case 1600:
+			fontSize = 14;
+			break;
+		case 1920:
+			fontSize = 15;
+			break;
+		default:
+			fontSize = 16;
+			break;
+		}
+    	
+    	return new Font("宋体",Font.BOLD,fontSize);
     }
 
-    public static int fontSizeOverJdk(){
-        return JAVA_VERSION.contains("1.8")? FontForJDK8.fontSize():FontForJDK8.fontSize();
-    }
-
-    private static class FontForJDK8{
-        private static int WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
-
-        public static int fontSize(){
-            if(WIDTH <= 1366){
-                return 12;
-            }else if(WIDTH <=1440){
-                return 13;
-            }else if(WIDTH <= 1600){
-                return 14;
-            }else if(WIDTH <= 1920){
-                return 15;
-            }
-            return 16;
-        }
-    }
 
 
 }
