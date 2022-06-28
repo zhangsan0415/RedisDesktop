@@ -20,16 +20,21 @@ public class Constants {
 	/**
 	 * 默认桌面窗口宽
 	 */
-	public static final int FRAME_W = CommonUtils.maxWidth()*17/20;
+	public static final int MAIN_WINDOW_WIDTH = CommonUtils.maxWidth()*18/20;
 	
 	/**
 	 * 默认桌面空口高
 	 */
-	public static final int FRAME_H = CommonUtils.maxHeight()*17/20;
+	public static final int MAIN_WINDOW_HEIGHT = CommonUtils.maxHeight()*18/20;
+
+	/**
+	 * 主窗口分隔条大小
+	 */
+	public static final int MAIN_WINDOW_DIVIDER_SIZE = 10;
 	
-	public static final int CONNECTION_W = FRAME_W/2;
+	public static final int CONNECTION_W = MAIN_WINDOW_WIDTH /2;
 	
-	public static final int CONNECTION_H = FRAME_H/2;
+	public static final int CONNECTION_H = MAIN_WINDOW_HEIGHT /2;
 	
 
 	public static final String REDIS_ALL_PATTERN = "*";

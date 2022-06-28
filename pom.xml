@@ -57,7 +57,7 @@
 				</descriptors> -->
 				<archive>
 					<manifest>
-						<mainClass>com.zsl.swing.redis.desktop.RedisDesktop</mainClass>
+						<mainClass>com.zsl.swing.redis.desktop.ZslRedisDesktopMain</mainClass>
 					</manifest>
 				</archive>
 			</configuration>

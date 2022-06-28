@@ -56,7 +56,7 @@ public class KeyPanel extends JPanel implements ActionListener{
 		target.setContinuousLayout(true);
 		target.setOneTouchExpandable(false);
 		target.setDividerSize(3);
-		target.setDividerLocation(Constants.FRAME_W/5);
+		target.setDividerLocation(Constants.MAIN_WINDOW_WIDTH /5);
 		target.setLeftComponent(new JScrollPane(keyTree));
 		target.setRightComponent(new JScrollPane(valueArea));
 		return target;

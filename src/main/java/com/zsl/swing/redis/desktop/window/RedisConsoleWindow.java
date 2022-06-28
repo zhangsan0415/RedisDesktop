@@ -41,10 +41,10 @@ public class RedisConsoleWindow extends BaseWindow{
 		super(connEntity.getShowName(),IconPaths.REDIS_CONSOLE_ICON);
 		this.connectionEntity = connEntity;
 
-		this.setSize(Constants.FRAME_W, Constants.FRAME_H);
+		this.setSize(Constants.MAIN_WINDOW_WIDTH, Constants.MAIN_WINDOW_HEIGHT);
 		
-		int x = CommonUtils.maxWidth()/2 - Constants.FRAME_W/2;
-		int y = CommonUtils.maxHeight()/2 - Constants.FRAME_H/2;
+		int x = CommonUtils.maxWidth()/2 - Constants.MAIN_WINDOW_WIDTH /2;
+		int y = CommonUtils.maxHeight()/2 - Constants.MAIN_WINDOW_HEIGHT /2;
 		
 		this.setLocation(x, y);
 		this.setContentPane(new JScrollPane(console));

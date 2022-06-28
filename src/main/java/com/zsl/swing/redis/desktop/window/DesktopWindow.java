@@ -28,6 +28,7 @@ import com.zsl.swing.redis.desktop.utils.CommonUtils;
  * @description  程序主窗口
  *
  */
+@Deprecated
 public class DesktopWindow extends BaseWindow{
 
 	private static final long serialVersionUID = 1L;
@@ -37,10 +38,10 @@ public class DesktopWindow extends BaseWindow{
 	public DesktopWindow() {
 		super("RedisDesktop", IconPaths.DESKTOP_ICON);
 		
-		setSize(Constants.FRAME_W, Constants.FRAME_H);
+		setSize(Constants.MAIN_WINDOW_WIDTH, Constants.MAIN_WINDOW_HEIGHT);
 		
-		int x = CommonUtils.maxWidth()/2 - Constants.FRAME_W/2;
-		int y = CommonUtils.maxHeight()/2 - Constants.FRAME_H/2;
+		int x = CommonUtils.maxWidth()/2 - Constants.MAIN_WINDOW_WIDTH /2;
+		int y = CommonUtils.maxHeight()/2 - Constants.MAIN_WINDOW_HEIGHT /2;
 		setLocation(x,y);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -49,7 +50,7 @@ public class DesktopWindow extends BaseWindow{
 		splitPane.setContinuousLayout(true);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerSize(DIVIDER_SIZE);
-		splitPane.setDividerLocation(Constants.FRAME_W/7);
+		splitPane.setDividerLocation(Constants.MAIN_WINDOW_WIDTH /7);
 
 		JScrollPane left = new JScrollPane(ContextHolder.getTree());
 		JSplitPane right = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -109,7 +110,7 @@ public class DesktopWindow extends BaseWindow{
 		root.setContinuousLayout(true);
 		root.setOneTouchExpandable(true);
 		root.setDividerSize(DIVIDER_SIZE);
-		root.setDividerLocation(Constants.FRAME_H*5/8);
+		root.setDividerLocation(Constants.MAIN_WINDOW_HEIGHT *5/8);
 		
 		root.setTopComponent(ContextHolder.getKeyPanel());
 		
