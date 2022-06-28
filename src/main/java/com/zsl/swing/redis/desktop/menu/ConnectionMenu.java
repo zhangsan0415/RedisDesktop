@@ -3,7 +3,7 @@ package com.zsl.swing.redis.desktop.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
 
 /**
@@ -12,7 +12,7 @@ import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
  * @description 连接节点所对应的菜单
  *
  */
-public class ConnectionMenu extends BaseMenu<ConnectionEntity> implements ActionListener{
+public class ConnectionMenu extends BaseMenu<NodeEntity> implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -26,7 +26,7 @@ public class ConnectionMenu extends BaseMenu<ConnectionEntity> implements Action
 //	private JMenuItem m3 = new JMenuItem(M3_STR);
 //	private JMenuItem m4 = new JMenuItem(M4_STR);
 	
-	public ConnectionMenu(ConnectionTreeNode<ConnectionEntity> treeNode) {
+	public ConnectionMenu(ConnectionTreeNode<NodeEntity> treeNode) {
 		super(treeNode);
 //		add(m2);
 //		add(m3);

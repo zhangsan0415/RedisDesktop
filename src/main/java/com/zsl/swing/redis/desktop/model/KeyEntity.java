@@ -6,6 +6,7 @@ package com.zsl.swing.redis.desktop.model;
  * @description DB key对应的节点实体
  *
  */
+@Deprecated
 public class KeyEntity implements Entity{
 	
 

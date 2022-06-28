@@ -4,7 +4,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.zsl.swing.redis.desktop.model.Entity;
 
-public class ConnectionTreeNode<T extends Entity> extends DefaultMutableTreeNode{
+public class ConnectionTreeNode<T> extends DefaultMutableTreeNode{
 
 	private static final long serialVersionUID = 1L;
 	

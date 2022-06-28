@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zsl.swing.redis.desktop.common.CommandMsg;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
 
 import redis.clients.jedis.BuilderFactory;
@@ -38,9 +38,9 @@ import redis.clients.jedis.util.Slowlog;
  *
  */
 public class RedisUtils {
-	private static final ConcurrentHashMap<String, ConnectionEntity> connectionMap = new ConcurrentHashMap<>(32);
+	private static final ConcurrentHashMap<String, NodeEntity> connectionMap = new ConcurrentHashMap<>(32);
 
-	public static boolean testConn(ConnectionEntity entity) {
+	public static boolean testConn(NodeEntity entity) {
 		try (Jedis jedis = new Jedis(entity.getHost(), entity.getPort())) {
 			String result = StringUtils.isEmpty(entity.getPassword()) ? jedis.ping(Constants.OK) : jedis.auth(entity.getPassword());
 			return Constants.OK.equalsIgnoreCase(result);
@@ -85,12 +85,12 @@ public class RedisUtils {
 	}
 	
 	private static Jedis buildJedis(String uniqueId) {
-		ConnectionEntity entity = connectionMap.get(uniqueId);
+		NodeEntity entity = connectionMap.get(uniqueId);
 		return buildJedis(entity);
 
 	}
 
-	private static Jedis buildJedis(ConnectionEntity entity){
+	private static Jedis buildJedis(NodeEntity entity){
 		Jedis jedis = new Jedis(entity.getHost(), entity.getPort());
 
 		jedis.getClient().setConnectionTimeout(5000);
@@ -104,7 +104,7 @@ public class RedisUtils {
 		return jedis;
 	}
 	
-	public static void addConnection(ConnectionEntity connectionEntity) {
+	public static void addConnection(NodeEntity connectionEntity) {
 		connectionMap.put(connectionEntity.getUniqueId(), connectionEntity);
 	}
 	
@@ -112,7 +112,7 @@ public class RedisUtils {
 		String host = "r-2zeruvuesgw2cciozcpd.redis.rds.aliyuncs.com";
 		String pass = "M16B$cMF1XNP";
 		
-		ConnectionEntity entity = new ConnectionEntity("测试一下");
+		NodeEntity entity = new NodeEntity("测试一下");
 		entity.setUniqueId(UniqueIdUtils.getUniqueId());
 		entity.setHost(host);
 		entity.setPassword(pass);
@@ -120,9 +120,9 @@ public class RedisUtils {
 		System.out.println(resultString);
 	}
 
-	public static void addConnections(List<ConnectionEntity> connections) {
+	public static void addConnections(List<NodeEntity> connections) {
 		if(!CollectionUtils.isEmpty(connections)) {
-			Map<String, ConnectionEntity> map = connections.stream().collect(Collectors.toMap(ConnectionEntity::getUniqueId, obj -> obj,(old,now) -> now));
+			Map<String, NodeEntity> map = connections.stream().collect(Collectors.toMap(NodeEntity::getUniqueId, obj -> obj,(old, now) -> now));
 			connectionMap.putAll(map);
 		}
 	}
@@ -313,7 +313,7 @@ public class RedisUtils {
 		}
 		Jedis jedis = null;
 		try {
-			ConnectionEntity entity = connectionMap.get(uniqueId);
+			NodeEntity entity = connectionMap.get(uniqueId);
 			jedis = buildJedis(entity);
 			jedis.select(dbIndex);
 			Client client = jedis.getClient();

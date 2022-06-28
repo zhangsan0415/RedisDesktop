@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.panel.ConnectionInfoPanel;
 import com.zsl.swing.redis.desktop.window.ConnectionInfoDialog;
 
@@ -33,7 +33,7 @@ public class ShowConnectionInfoAction{
 
 
 	private void showConnectionInfo() {
-		ConnectionEntity entity = (ConnectionEntity)treeNode.getUserObject();
+		NodeEntity entity = (NodeEntity)treeNode.getUserObject();
 		
 		connectionInfoPanel.setPanelValue(entity);
 		connectionInfoPanel.setEditable(false);

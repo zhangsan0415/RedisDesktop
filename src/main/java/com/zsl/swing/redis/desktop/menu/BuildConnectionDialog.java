@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.panel.ConnectionInfoPanel;
 import com.zsl.swing.redis.desktop.utils.DialogUtils;
 import com.zsl.swing.redis.desktop.utils.RedisUtils;
@@ -77,7 +77,7 @@ public class BuildConnectionDialog {
 		}
 		
 		private void testConn() {
-			ConnectionEntity entity = connectionInfoPanel.getEntity();
+			NodeEntity entity = connectionInfoPanel.getEntity();
 			boolean testConn = RedisUtils.testConn(entity);
 			String msg = testConn?"连接成功":"连接失败";
 			DialogUtils.msgDialog(dialog,msg);

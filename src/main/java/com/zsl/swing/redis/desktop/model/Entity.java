@@ -6,6 +6,7 @@ package com.zsl.swing.redis.desktop.model;
  * @description  树节点对应的实体基类
  *
  */
+@Deprecated
 public interface Entity {
 
 	NodeType nodeType();

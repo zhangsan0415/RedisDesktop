@@ -11,7 +11,7 @@ import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
  * @description 菜单基类
  *
  */
-public class BaseMenu<T extends Entity> extends JPopupMenu{
+public class BaseMenu<T> extends JPopupMenu{
 
 	private static final long serialVersionUID = 1L;
 	

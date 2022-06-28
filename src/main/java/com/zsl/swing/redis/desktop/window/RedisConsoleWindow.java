@@ -2,7 +2,7 @@ package com.zsl.swing.redis.desktop.window;
 
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.IconPaths;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.utils.*;
 
 import javax.swing.*;
@@ -31,13 +31,13 @@ public class RedisConsoleWindow extends BaseWindow{
 
 	private final EnterKeyAction enterKeyAction = new EnterKeyAction();
 	
-	private final ConnectionEntity connectionEntity;
+	private final NodeEntity connectionEntity;
 
 	private String tempText;
 
 	private String prefix;
 
-	public RedisConsoleWindow(ConnectionEntity connEntity) {
+	public RedisConsoleWindow(NodeEntity connEntity) {
 		super(connEntity.getShowName(),IconPaths.REDIS_CONSOLE_ICON);
 		this.connectionEntity = connEntity;
 

@@ -6,6 +6,7 @@ package com.zsl.swing.redis.desktop.model;
  * @description DB节点所对应的实体
  *
  */
+@Deprecated
 public class DataBaseEntity implements Entity{
 
 	private int dbIndex;

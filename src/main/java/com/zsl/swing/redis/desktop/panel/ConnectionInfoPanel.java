@@ -10,7 +10,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.zsl.swing.redis.desktop.common.ContextHolder;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.utils.DialogUtils;
 import com.zsl.swing.redis.desktop.utils.StringUtils;
 import com.zsl.swing.redis.desktop.utils.UniqueIdUtils;
@@ -41,7 +41,7 @@ public class ConnectionInfoPanel extends JPanel{
 		this(null,true);
 	}
 	
-	public ConnectionInfoPanel(ConnectionEntity entity,boolean editable) {
+	public ConnectionInfoPanel(NodeEntity entity, boolean editable) {
 		JLabel showNameLabel = new JLabel("名称：",JLabel.RIGHT);
 		showNameField = new JTextField(DEFAULT_LEN);
 		
@@ -83,7 +83,7 @@ public class ConnectionInfoPanel extends JPanel{
 		this.passwordField.setText(null);
 	}
 	
-	public void setPanelValue(ConnectionEntity entity) {
+	public void setPanelValue(NodeEntity entity) {
 		if(entity != null) {
 			this.idField.setText(entity.getUniqueId());
 			this.hostTextField.setText(entity.getHost());
@@ -141,8 +141,8 @@ public class ConnectionInfoPanel extends JPanel{
 		return null;
 	}
 	
-	public ConnectionEntity getEntity() {
-		ConnectionEntity entity = new ConnectionEntity();
+	public NodeEntity getEntity() {
+		NodeEntity entity = new NodeEntity();
 		
 		String uniqueId = StringUtils.isEmpty(this.getUniqueId())?UniqueIdUtils.getUniqueId():this.getUniqueId();
 		entity.setUniqueId(uniqueId);

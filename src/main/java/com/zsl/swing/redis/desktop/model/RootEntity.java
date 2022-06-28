@@ -17,7 +17,7 @@ public class RootEntity implements Entity{
 	
 	private String showName = "Connections";
 	
-	private List<ConnectionEntity> connections = FileUtils.readConnections();
+	private List<NodeEntity> connections = FileUtils.readConnections();
 
 	@Override
 	public ConnectionNodeType nodeType() {
@@ -29,20 +29,20 @@ public class RootEntity implements Entity{
 		return this.showName;
 	}
 
-	public List<ConnectionEntity> getConnections() {
+	public List<NodeEntity> getConnections() {
 		return this.connections;
 	}
 
-	public void setConnections(List<ConnectionEntity> connections) {
+	public void setConnections(List<NodeEntity> connections) {
 		this.connections = connections;
 	}
 	
-	public void addConnectionEntity(ConnectionEntity conn) {
+	public void addConnectionEntity(NodeEntity conn) {
 		if(this.connections == null) {
 			this.connections = new ArrayList<>(20);
 		}
 		
-		List<ConnectionEntity> connectionList = this.connections.stream().filter(entity -> !entity.getUniqueId().equals(conn.getUniqueId())).collect(Collectors.toList());
+		List<NodeEntity> connectionList = this.connections.stream().filter(entity -> !entity.getUniqueId().equals(conn.getUniqueId())).collect(Collectors.toList());
 		
 		connectionList.add(conn);
 		
@@ -50,7 +50,7 @@ public class RootEntity implements Entity{
 	}
 	
 	
-	public void removeConnectionEntity(ConnectionEntity conn) {
+	public void removeConnectionEntity(NodeEntity conn) {
 		if(!CollectionUtils.isEmpty(this.connections)) {
 			this.connections = this.connections.stream().filter(obj -> !obj.getUniqueId().equals(conn.getUniqueId())).collect(Collectors.toList());
 		}

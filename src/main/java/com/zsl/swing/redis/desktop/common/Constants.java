@@ -73,4 +73,6 @@ public class Constants {
 	public static final String DELETE = "Delete";
 	public static final String DELETE_MATCH = "DeleteMatch";
 
+    public static final int MENU_HEIGHT = 20;
+	public static final int MENU_WIDTH = 35;
 }

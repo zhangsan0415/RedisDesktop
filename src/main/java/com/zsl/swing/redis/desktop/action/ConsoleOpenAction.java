@@ -1,7 +1,8 @@
 package com.zsl.swing.redis.desktop.action;
 
 import com.zsl.swing.redis.desktop.common.ContextHolder;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.Entity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.tree.ConnectionTreeNode;
 import com.zsl.swing.redis.desktop.utils.DialogUtils;
 import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
@@ -22,13 +23,13 @@ public class ConsoleOpenAction  implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        ConnectionTreeNode<ConnectionEntity> selectedNode = ContextHolder.getTree().getSelectionConnectionNode();
+        ConnectionTreeNode<Entity> selectedNode = ContextHolder.getTree().getSelectionConnectionNode();
 
         if(Objects.isNull(selectedNode)){
             DialogUtils.errorDialog(parent,"请先选择连接！");
             return;
         }
 
-        new RedisConsoleWindow(selectedNode.getUserObject());
+//        new RedisConsoleWindow(selectedNode.getUserObject());
     }
 }

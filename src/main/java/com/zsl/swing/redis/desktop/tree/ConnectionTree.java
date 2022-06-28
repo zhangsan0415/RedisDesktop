@@ -17,7 +17,7 @@ import javax.swing.tree.TreePath;
 
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.common.IconPaths;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.model.DataBaseEntity;
 import com.zsl.swing.redis.desktop.model.Entity;
 import com.zsl.swing.redis.desktop.model.Entity.ConnectionNodeType;
@@ -68,13 +68,13 @@ public class ConnectionTree extends JTree{
 	}
 	
 	private void initConnectionNodes() {
-		List<ConnectionEntity> connections = rootEntity.getConnections();
+		List<NodeEntity> connections = rootEntity.getConnections();
 		
 		if(!CollectionUtils.isEmpty(connections)) {
 			RedisUtils.addConnections(connections);
-			for(ConnectionEntity entity:connections) {
+			for(NodeEntity entity:connections) {
 				rootEntity.addConnectionEntity(entity);
-				rootNode.add(new ConnectionTreeNode<>(entity));
+//				rootNode.add(new ConnectionTreeNode<>(entity));
 			}
 		}
 	}
@@ -92,14 +92,14 @@ public class ConnectionTree extends JTree{
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void saveConnectionNode(ConnectionEntity newEntity) {
+	public void saveConnectionNode(NodeEntity newEntity) {
 		rootEntity.addConnectionEntity(newEntity);
 		RedisUtils.addConnection(newEntity);
 
 		Enumeration<?> children = rootNode.children();
 		while (children.hasMoreElements()) {
 			ConnectionTreeNode node = (ConnectionTreeNode) children.nextElement();
-			ConnectionEntity connEntity = (ConnectionEntity) node.getUserObject();
+			NodeEntity connEntity = (NodeEntity) node.getUserObject();
 			if(newEntity.getUniqueId().equals(connEntity.getUniqueId())) {
 				node.setUserObject(newEntity);
 				tree.refreshTree(new TreePath(rootNode));
@@ -108,32 +108,32 @@ public class ConnectionTree extends JTree{
 		}
 		
 		
-		rootNode.add(new ConnectionTreeNode<>(newEntity));
+//		rootNode.add(new ConnectionTreeNode<>(newEntity));
 		
 		tree.refreshTree(new TreePath(rootNode));
 	}
 
 	@SuppressWarnings("unchecked")
-	public ConnectionTreeNode<ConnectionEntity> getSelectionConnectionNode(){
+	public ConnectionTreeNode<Entity> getSelectionConnectionNode(){
 		TreePath path = tree.getSelectionPath();
 		if(!Objects.isNull(path)){
-			ConnectionTreeNode<?> selectNode = (ConnectionTreeNode<?>) path.getLastPathComponent();
+			ConnectionTreeNode<Entity> selectNode = (ConnectionTreeNode<Entity>) path.getLastPathComponent();
 			Entity entity = selectNode.getUserObject();
 			if(entity.isConnectionNode()){
-				return (ConnectionTreeNode<ConnectionEntity>) selectNode;
+//				return (ConnectionTreeNode<NodeEntity>) selectNode;
 			}
 		}
 		return null;
 	}
 	
-	public void removeNode(ConnectionTreeNode<ConnectionEntity> treeNode) {
+	public void removeNode(ConnectionTreeNode<Entity> treeNode) {
 		DefaultTreeModel model = (DefaultTreeModel)this.getModel();
 		model.removeNodeFromParent(treeNode);
 		
-		ConnectionEntity entity = treeNode.getUserObject();
-		rootEntity.removeConnectionEntity(entity);
+		Entity entity = treeNode.getUserObject();
+//		rootEntity.removeConnectionEntity(entity);
 		
-		RedisUtils.removeConnection(entity.getUniqueId());
+//		RedisUtils.removeConnection(entity.getUniqueId());
 		
 		ContextHolder.getKeyPanel().clearPanel();
 		this.updateUI();
@@ -151,7 +151,7 @@ public class ConnectionTree extends JTree{
 		}
 		
 		@SuppressWarnings("rawtypes")
-		ConnectionTreeNode selectedNode = (ConnectionTreeNode)selectionPath.getLastPathComponent();
+		ConnectionTreeNode<Entity> selectedNode = (ConnectionTreeNode)selectionPath.getLastPathComponent();
 		
 		Entity entity = selectedNode.getUserObject();
 		return entity.isDbNode()?(DataBaseEntity)entity:null;
@@ -160,30 +160,30 @@ public class ConnectionTree extends JTree{
 	public void connect(Component parent){
 		TreePath path = this.getSelectionPath();
 
-		ConnectionTreeNode<ConnectionEntity> selectNode = this.getSelectionConnectionNode();
+		ConnectionTreeNode<Entity> selectNode = this.getSelectionConnectionNode();
 		if(Objects.isNull(selectNode)){
 			DialogUtils.errorDialog(parent,"请先选择连接！");
 			return;
 		}
 
-		ConnectionEntity connectionEntity = selectNode.getUserObject();
-		boolean testConn = RedisUtils.connect(connectionEntity.getUniqueId());
-		if(!testConn) {
-			DialogUtils.errorDialog("连接失败");
-			return;
-		}
+		Entity connectionEntity = selectNode.getUserObject();
+//		boolean testConn = RedisUtils.connect(connectionEntity.getUniqueId());
+//		if(!testConn) {
+//			DialogUtils.errorDialog("连接失败");
+//			return;
+//		}
 
 		selectNode.removeAllChildren();
-		int dbCount = RedisUtils.dbCount(connectionEntity.getUniqueId());
-		for(int i = 0;i<dbCount;i++) {
-			DataBaseEntity dataBaseEntity = new DataBaseEntity();
-			dataBaseEntity.setDbIndex(i);
-			dataBaseEntity.setShowName(String.valueOf(i));
-			dataBaseEntity.setUniqueId(connectionEntity.getUniqueId());
-
-			ConnectionTreeNode<DataBaseEntity> childNode = new ConnectionTreeNode<>(dataBaseEntity);
-			selectNode.add(childNode);
-		}
+//		int dbCount = RedisUtils.dbCount(connectionEntity.getUniqueId());
+//		for(int i = 0;i<dbCount;i++) {
+//			DataBaseEntity dataBaseEntity = new DataBaseEntity();
+//			dataBaseEntity.setDbIndex(i);
+//			dataBaseEntity.setShowName(String.valueOf(i));
+//			dataBaseEntity.setUniqueId(connectionEntity.getUniqueId());
+//
+//			ConnectionTreeNode<DataBaseEntity> childNode = new ConnectionTreeNode<>(dataBaseEntity);
+//			selectNode.add(childNode);
+//		}
 
 		this.expandPath(path);
 		this.updateUI();
@@ -236,7 +236,7 @@ public class ConnectionTree extends JTree{
 			}
 			
 			@SuppressWarnings("rawtypes")
-			ConnectionTreeNode node = (ConnectionTreeNode)path.getLastPathComponent();
+			ConnectionTreeNode<Entity> node = (ConnectionTreeNode<Entity>)path.getLastPathComponent();
 			Entity entity = node.getUserObject();
 
 			if(!entity.isRoot()) {
@@ -264,7 +264,7 @@ public class ConnectionTree extends JTree{
 				}
 
 				@SuppressWarnings("rawtypes")
-				ConnectionTreeNode node = (ConnectionTreeNode)path.getLastPathComponent();
+				ConnectionTreeNode<Entity> node = (ConnectionTreeNode)path.getLastPathComponent();
 				Entity entity = node.getUserObject();
 
 				if(entity.isConnectionNode() && !node.children().hasMoreElements()){

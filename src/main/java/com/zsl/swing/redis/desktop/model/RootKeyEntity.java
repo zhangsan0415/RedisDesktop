@@ -8,6 +8,7 @@ import java.util.List;
  * @description DB节点下目录节点对应的实体
  *
  */
+@Deprecated
 public class RootKeyEntity implements Entity{
 	
 	private String showName;

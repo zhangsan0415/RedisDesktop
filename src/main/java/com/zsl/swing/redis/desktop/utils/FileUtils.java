@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
-import com.zsl.swing.redis.desktop.model.ConnectionEntity;
+import com.zsl.swing.redis.desktop.model.NodeEntity;
 
 /**
  * 
@@ -28,14 +28,14 @@ public class FileUtils {
 	
 	private static final Charset DEFAULT_ENCODE = Charset.forName("utf-8");
 	
-	public static List<ConnectionEntity> readConnections(){
+	public static List<NodeEntity> readConnections(){
 		String connectionsString = readFile2String(CONFIG_PATH,FILE_NAME);
 		
 		if(StringUtils.isEmpty(connectionsString)) {
 			return Collections.emptyList();
 		}else {
 			try {
-				return JSONArray.parseArray(connectionsString, ConnectionEntity.class);
+				return JSONArray.parseArray(connectionsString, NodeEntity.class);
 			} catch (Exception e) {
 				ContextHolder.logError(e);
 				return Collections.emptyList();
@@ -62,7 +62,7 @@ public class FileUtils {
 	}
 	
 	
-	public static void writeConnections(List<ConnectionEntity> connectionEntities) {
+	public static void writeConnections(List<NodeEntity> connectionEntities) {
 		
 		FileOutputStream fos = null;
 		try{
@@ -73,7 +73,7 @@ public class FileUtils {
 			}else {
 				targetString = JSONArray.toJSONString(connectionEntities);
 			}
-			
+
 			System.out.println("即将保存的连接："+ targetString);
 
 			fos.write(targetString.getBytes(DEFAULT_ENCODE));
