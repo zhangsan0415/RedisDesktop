@@ -1,6 +1,7 @@
 package com.zsl.swing.redis.desktop.window.panel;
 
 import com.zsl.swing.redis.desktop.utils.StringUtils;
+import com.zsl.swing.redis.desktop.window.ZslRedisDesktopMainWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +19,7 @@ public class ZslErrorLogPanel extends JScrollPane  implements ActionListener {
     /**
      * 日志记录文本域
      */
-    private JTextArea logArea = new JTextArea();
+    private static JTextArea logArea = new JTextArea();
 
     private static final String B1_STR = "清空日志";
 
@@ -30,7 +31,7 @@ public class ZslErrorLogPanel extends JScrollPane  implements ActionListener {
     private static final String INFO__LEVEL = "INFO ";
 
     public ZslErrorLogPanel(){
-        super();
+        super(logArea);
         logArea.setEditable(false);
         logArea.addMouseListener(new MouseAdapter() {
 
@@ -38,7 +39,7 @@ public class ZslErrorLogPanel extends JScrollPane  implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                 JMenuItem clearItem = new JMenuItem(B1_STR);
                 clearItem.addActionListener(ZslErrorLogPanel.this);
-                JMenuItem copyItem = new JMenuItem(B1_STR);
+                JMenuItem copyItem = new JMenuItem(B2_STR);
                 copyItem.addActionListener(ZslErrorLogPanel.this);
 
                 JPopupMenu popupMenu = new JPopupMenu();
@@ -51,7 +52,7 @@ public class ZslErrorLogPanel extends JScrollPane  implements ActionListener {
                     copyItem.setEnabled(false);
                 }
 
-                popupMenu.show(ZslErrorLogPanel.this,e.getX(),e.getY());
+                popupMenu.show(logArea,e.getX(),e.getY());
             }
         });
     }
@@ -75,6 +76,10 @@ public class ZslErrorLogPanel extends JScrollPane  implements ActionListener {
         logArea.append("\n");
     }
 
+    public void logError(String msg){
+        logArea.append(String.format(LOG_FORMAT,ERROR_LEVEL, msg));
+        logArea.append("\n");
+    }
     public void log(String msg){
         logArea.append(String.format(LOG_FORMAT,INFO__LEVEL, msg));
         logArea.append("\n");

@@ -34,6 +34,7 @@ import com.zsl.swing.redis.desktop.utils.RedisUtils;
  * @description 连接配置树
  *
  */
+@Deprecated
 public class ConnectionTree extends JTree{
 	
 	private static final long serialVersionUID = 1L;

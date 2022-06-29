@@ -50,19 +50,21 @@ public class ZslRedisDesktopMainWindow extends BaseWindow{
 	 */
 	private static ZslShowPanel zslShowPanel = new ZslShowPanel();
 
+	private static ZslRedisDesktopMainWindow mainWindow;
+
 
 
 	public ZslRedisDesktopMainWindow() {
 		super("RedisDesktop", IconPaths.DESKTOP_ICON);
 
 		//设置窗口大小
-		setSize(Constants.MAIN_WINDOW_WIDTH, Constants.MAIN_WINDOW_HEIGHT);
+		this.setSize(Constants.MAIN_WINDOW_WIDTH, Constants.MAIN_WINDOW_HEIGHT);
 
 		//计算窗口位置
 		int x = CommonUtils.maxWidth()/2 - Constants.MAIN_WINDOW_WIDTH /2;
 		int y = CommonUtils.maxHeight()/2 - Constants.MAIN_WINDOW_HEIGHT /2;
-		setLocation(x,y);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocation(x,y);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//设置菜单
 		this.setJMenuBar(zslMenuBar);
@@ -90,8 +92,9 @@ public class ZslRedisDesktopMainWindow extends BaseWindow{
 		right.setBottomComponent(zslErrorLogPanel);
 
 		mainSplitPane.setRightComponent(right);
+		mainSplitPane.setVisible(true);
 
-//		this.setContentPane(splitPane);
+		this.setContentPane(mainSplitPane);
 
 //		JToolBar toolBar = this.buildToolBar();
 //		this.getContentPane().add(toolBar,BorderLayout.NORTH);
@@ -99,9 +102,9 @@ public class ZslRedisDesktopMainWindow extends BaseWindow{
 
 //		this.buildRightPane(right);
 
-		setVisible(true);
+		this.setVisible(true);
 		
-		addWindowListener(new WindowAdapter() {
+		this.addWindowListener(new WindowAdapter() {
 			
 		    @Override
 			public void windowClosing(WindowEvent e) {
@@ -109,7 +112,13 @@ public class ZslRedisDesktopMainWindow extends BaseWindow{
 		    }
 			
 		});
+
+		mainWindow = this;
 		
+	}
+
+	public static ZslRedisDesktopMainWindow getMainWindow(){
+		return mainWindow;
 	}
 
 	public static ZslMenuBar getZslMenuBar(){

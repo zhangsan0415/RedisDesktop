@@ -18,6 +18,7 @@ import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
 
+import com.zsl.swing.redis.desktop.window.ZslRedisDesktopMainWindow;
 import redis.clients.jedis.BuilderFactory;
 import redis.clients.jedis.Client;
 import redis.clients.jedis.GeoCoordinate;
@@ -45,7 +46,7 @@ public class RedisUtils {
 			String result = StringUtils.isEmpty(entity.getPassword()) ? jedis.ping(Constants.OK) : jedis.auth(entity.getPassword());
 			return Constants.OK.equalsIgnoreCase(result);
 		} catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return false;
 		}
 	}

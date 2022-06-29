@@ -2,6 +2,7 @@ package com.zsl.swing.redis.desktop.window.menu;
 
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.type.MenuEnum;
+import com.zsl.swing.redis.desktop.window.panel.ZslConnectionPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class ZslServerMenu extends JMenu implements ActionListener {
 
-    private static final String MENU_NAME = "服务（server）";
+    private static final String MENU_NAME = "server";
 
 
     public ZslServerMenu(){
@@ -33,7 +34,6 @@ public class ZslServerMenu extends JMenu implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String actionCommand = e.getActionCommand();
-        MenuEnum.process(actionCommand);
+        ZslConnectionPanel.doActionForMenu(e.getActionCommand());
     }
 }

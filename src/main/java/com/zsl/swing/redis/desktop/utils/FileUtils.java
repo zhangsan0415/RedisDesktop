@@ -9,10 +9,13 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.NodeEntity;
+import com.zsl.swing.redis.desktop.window.ZslRedisDesktopMainWindow;
 
 /**
  * 
@@ -37,7 +40,7 @@ public class FileUtils {
 			try {
 				return JSONArray.parseArray(connectionsString, NodeEntity.class);
 			} catch (Exception e) {
-				ContextHolder.logError(e);
+				ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 				return Collections.emptyList();
 			}
 		}
@@ -62,7 +65,7 @@ public class FileUtils {
 	}
 	
 	
-	public static void writeConnections(List<NodeEntity> connectionEntities) {
+	public static boolean writeConnections(List<NodeEntity> connectionEntities) {
 		
 		FileOutputStream fos = null;
 		try{
@@ -75,17 +78,18 @@ public class FileUtils {
 			}
 
 			System.out.println("即将保存的连接："+ targetString);
-
 			fos.write(targetString.getBytes(DEFAULT_ENCODE));
 			fos.flush();
+			return true;
 		}catch (Exception e) {
-			e.printStackTrace();
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
+			return false;
 		}finally {
 			if(fos != null) {
 				try {
 					fos.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 				}
 			}
 		}
@@ -114,5 +118,25 @@ public class FileUtils {
 			return null;
 		}
 	}
-	
+
+	public static boolean saveConnection(NodeEntity entity) {
+		List<NodeEntity> nodeEntities = readConnections();
+		if(StringUtils.isEmpty(entity.getUniqueId())){
+			entity.setUniqueId(UniqueIdUtils.getUniqueId());
+			nodeEntities.add(entity);
+		}else{
+			nodeEntities = nodeEntities.stream().filter(e -> !e.getUniqueId().equals(entity.getUniqueId())).collect(Collectors.toList());
+			nodeEntities.add(entity);
+		}
+
+		return writeConnections(nodeEntities);
+	}
+
+    public static boolean deleteConnection(NodeEntity entity) {
+		List<NodeEntity> nodeEntities = readConnections();
+		nodeEntities = nodeEntities.stream().filter(e -> !e.getUniqueId().equals(entity.getUniqueId())).collect(Collectors.toList());
+
+		return writeConnections(nodeEntities);
+
+	}
 }

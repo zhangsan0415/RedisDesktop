@@ -1,19 +1,17 @@
-package com.zsl.swing.redis.desktop.panel;
-
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+package com.zsl.swing.redis.desktop.window.panel;
 
 import com.zsl.swing.redis.desktop.common.ContextHolder;
 import com.zsl.swing.redis.desktop.model.NodeEntity;
+import com.zsl.swing.redis.desktop.type.NodeTypeEnum;
 import com.zsl.swing.redis.desktop.utils.DialogUtils;
+import com.zsl.swing.redis.desktop.utils.FileUtils;
 import com.zsl.swing.redis.desktop.utils.StringUtils;
 import com.zsl.swing.redis.desktop.utils.UniqueIdUtils;
+import com.zsl.swing.redis.desktop.window.ZslRedisDesktopMainWindow;
+import com.zsl.swing.redis.desktop.window.tree.ZslServerTree;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * 
@@ -21,27 +19,27 @@ import com.zsl.swing.redis.desktop.utils.UniqueIdUtils;
  * @description 连接信息面版
  *
  */
-public class ConnectionInfoPanel extends JPanel{
+public class ZslServerInfoPanel extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private JTextField hostTextField;
-	
+
 	private JTextField portTextField;
-	
+
 	private JPasswordField passwordField;
-	
+
 	private JTextField showNameField;
-	
+
 	private JTextField idField;
-	
+
 	private static final int DEFAULT_LEN = 30;
-	
-	public ConnectionInfoPanel() {
+
+	public ZslServerInfoPanel() {
 		this(null,true);
 	}
-	
-	public ConnectionInfoPanel(NodeEntity entity, boolean editable) {
+
+	public ZslServerInfoPanel(NodeEntity entity, boolean editable) {
 		JLabel showNameLabel = new JLabel("名称：",JLabel.RIGHT);
 		showNameField = new JTextField(DEFAULT_LEN);
 		
@@ -50,6 +48,7 @@ public class ConnectionInfoPanel extends JPanel{
 		
 		JLabel portLabel = new JLabel("端口：",JLabel.RIGHT);
 		portTextField = new JTextField(DEFAULT_LEN);
+		portTextField.setText("6379");
 		
 		JLabel passwordLabel = new JLabel("密码：",JLabel.RIGHT);
 		passwordField = new JPasswordField(DEFAULT_LEN);
@@ -73,6 +72,8 @@ public class ConnectionInfoPanel extends JPanel{
 		this.add(portTextField,constraints,2,2,6);
 		this.add(passwordLabel,constraints,0,3,2);
 		this.add(passwordField,constraints,2,3,6);
+
+		this.setVisible(true);
 	}
 	
 	public void reset() {
@@ -129,16 +130,18 @@ public class ConnectionInfoPanel extends JPanel{
 	}
 	
 	
-	public String dataValidate() {
+	public boolean dataValidate() {
 		if(StringUtils.hasEmpty(this.getShowName(),this.getHost(),this.getPort())) {
-			return "名称、主机与端口均不能为空！";
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().log("名称、主机与端口均不能为空！");
+			return false;
 		}
 		
 		if(!StringUtils.isInt(this.getPort())) {
-			return "端口号只能是数字！";
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().log("端口号只能是数字！");
+			return false;
 		}
 		
-		return null;
+		return true;
 	}
 	
 	public NodeEntity getEntity() {
@@ -150,26 +153,15 @@ public class ConnectionInfoPanel extends JPanel{
 		entity.setHost(this.getHost());
 		entity.setPort(Integer.parseInt(this.getPort()));
 		entity.setPassword(this.getPwd());
+		entity.setNodeType(NodeTypeEnum.CONNECTION);
 		return entity;
 	}
 	
 	
 	
-	public boolean validateAndSaveToConnectionTree() {
-		String errorMsg = this.dataValidate();
-		if(errorMsg != null) {
-			DialogUtils.errorDialog(this, errorMsg);
-			return false;
-		}
-		
-		this.saveToConnectionTree();
-		return true;
-	}
-	
-	
-	public void saveToConnectionTree() {
-		ContextHolder.getTree().saveConnectionNode(this.getEntity());
 
+	public void saveToConnectionTree() {
+		ZslServerTree.saveNode(this.getEntity());
 	}
 	
 	
