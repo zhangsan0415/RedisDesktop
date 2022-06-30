@@ -32,9 +32,9 @@ public class Constants {
 	 */
 	public static final int MAIN_WINDOW_DIVIDER_SIZE = 10;
 	
-	public static final int CONNECTION_W = MAIN_WINDOW_WIDTH /2;
+	public static final int CONNECTION_W = MAIN_WINDOW_WIDTH /4;
 	
-	public static final int CONNECTION_H = MAIN_WINDOW_HEIGHT /2;
+	public static final int CONNECTION_H = MAIN_WINDOW_HEIGHT /4;
 	
 
 	public static final String REDIS_ALL_PATTERN = "*";

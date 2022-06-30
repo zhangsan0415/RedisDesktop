@@ -11,7 +11,9 @@ public enum NodeTypeEnum {
 
     ROOT(0, IconUtils.getScaleImageIcon(IconPaths.SET_ICON, Constants.ICON_WIDTH, Constants.ICON_HEIGHT)),
     CONNECTION(1,IconUtils.getScaleImageIcon(IconPaths.CONN_ICON,  Constants.ICON_WIDTH, Constants.ICON_HEIGHT)),
-    DB(2, IconUtils.getScaleImageIcon(IconPaths.DB_ICON, Constants.ICON_WIDTH, Constants.ICON_HEIGHT));
+    DB(2, IconUtils.getScaleImageIcon(IconPaths.DB_ICON, Constants.ICON_WIDTH, Constants.ICON_HEIGHT)),
+    DB_KEY(3,IconUtils.getScaleImageIcon(IconPaths.DB_KEY_ICON,  Constants.ICON_WIDTH, Constants.ICON_HEIGHT)),
+    DB_KEY_ROOT(4,IconUtils.getScaleImageIcon(IconPaths.DB_DIR_ICON, Constants.ICON_WIDTH, Constants.ICON_HEIGHT));
 
     private int type;
 

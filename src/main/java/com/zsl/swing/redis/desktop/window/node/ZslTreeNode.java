@@ -13,9 +13,11 @@ public class ZslTreeNode<T> implements TreeNode {
 
     private T entity;
 
-    private Vector<ZslTreeNode> children;
+    private Vector<ZslTreeNode> children = new Vector<>();
 
     private boolean isLeaf = false;
+
+    private boolean isRoot = false;
 
     public ZslTreeNode(T entity){
         this(entity,false);
@@ -91,5 +93,13 @@ public class ZslTreeNode<T> implements TreeNode {
 
     public void setChildren(Vector<ZslTreeNode> children) {
         this.children = children;
+    }
+
+    public boolean isRoot() {
+        return isRoot;
+    }
+
+    public void setRoot(boolean root) {
+        isRoot = root;
     }
 }

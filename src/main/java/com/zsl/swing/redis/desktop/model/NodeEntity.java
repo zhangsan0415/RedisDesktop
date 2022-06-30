@@ -34,6 +34,8 @@ public class NodeEntity {
 
 	private List<NodeEntity> sonList;
 
+	private NodeEntity parent;
+
 	private static DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootEntity());
 
 	private static NodeEntity rootEntity = null;
@@ -51,6 +53,14 @@ public class NodeEntity {
 		}
 
 		return rootEntity;
+	}
+
+	public NodeEntity getParent() {
+		return parent;
+	}
+
+	public void setParent(NodeEntity parent) {
+		this.parent = parent;
 	}
 
 	public int getDbIndex() {

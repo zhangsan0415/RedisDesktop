@@ -8,6 +8,7 @@ import com.zsl.swing.redis.desktop.utils.FileUtils;
 import com.zsl.swing.redis.desktop.utils.RedisUtils;
 import com.zsl.swing.redis.desktop.window.ZslRedisDesktopMainWindow;
 import com.zsl.swing.redis.desktop.window.panel.ZslConnectionPanel;
+import com.zsl.swing.redis.desktop.window.panel.ZslDbOptPanel;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -88,6 +89,7 @@ public class ZslServerTree{
         boolean result = FileUtils.deleteConnection(entity);
         if(result){
             refreshTree();
+            RedisUtils.removeConnection(entity.getUniqueId());
             DialogUtils.msgDialog(ZslRedisDesktopMainWindow.getMainWindow(),"删除成功！");
         }else{
             ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError("删除连接失败");
@@ -120,6 +122,7 @@ public class ZslServerTree{
 
     private static class TreeMouseClickAction extends MouseAdapter implements ActionListener {
 
+        private static final String TAB_TITLE_FORMAT = "%s[%s]";
         @Override
         public void mousePressed(MouseEvent e) {
             TreePath path = me.getPathForLocation(e.getX(), e.getY());
@@ -189,7 +192,15 @@ public class ZslServerTree{
                     }
                 });
 
+                JMenuItem createOptWindowItem = new JMenuItem("新建操作窗口");
+                createOptWindowItem.addActionListener(event -> {
+                    String serverName = entity.getParent().getShowName();
+                    String tabTitle = String.format(TAB_TITLE_FORMAT, serverName, entity.getDbIndex());
+                    ZslRedisDesktopMainWindow.getZslShowPanel().addTab(tabTitle, NodeTypeEnum.DB.getIcon(), ZslDbOptPanel.getInstance(entity));
+                });
+
                 JPopupMenu popupMenu = new JPopupMenu();
+                popupMenu.add(createOptWindowItem);
                 popupMenu.add(flushMenuItem);
 
                 popupMenu.show(me,e.getX(),e.getY());
@@ -235,6 +246,7 @@ public class ZslServerTree{
             dbEntity.setUniqueId(entity.getUniqueId());
             dbEntity.setShowName(String.valueOf(i));
 
+            dbEntity.setParent(entity);
             node.add(new DefaultMutableTreeNode(dbEntity));
         }
 

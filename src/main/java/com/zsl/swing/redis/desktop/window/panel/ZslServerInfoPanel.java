@@ -65,13 +65,13 @@ public class ZslServerInfoPanel extends JPanel{
 		constraints.anchor = GridBagConstraints.EAST;
 		
 		this.add(showNameLabel,constraints,0,0,2);
-		this.add(showNameField,constraints,2,0,6);
-		this.add(hostLabel,constraints,0,1,2);
-		this.add(hostTextField,constraints,2,1,6);
-		this.add(portLabel,constraints,0,2,2);
-		this.add(portTextField,constraints,2,2,6);
-		this.add(passwordLabel,constraints,0,3,2);
-		this.add(passwordField,constraints,2,3,6);
+		this.add(showNameField,constraints,2,0,12);
+		this.add(hostLabel,constraints,0,4,2);
+		this.add(hostTextField,constraints,2,4,12);
+		this.add(portLabel,constraints,0,8,2);
+		this.add(portTextField,constraints,2,8,12);
+		this.add(passwordLabel,constraints,0,12,2);
+		this.add(passwordField,constraints,2,12,12);
 
 		this.setVisible(true);
 	}
@@ -122,7 +122,7 @@ public class ZslServerInfoPanel extends JPanel{
 	}
 	
 	public void add(Component s,GridBagConstraints constraints,int x,int y,int w) {
-		constraints.gridheight = 1;
+		constraints.gridheight = 3;
 		constraints.gridwidth = w;
 		constraints.gridx = x;
 		constraints.gridy = y;

@@ -104,14 +104,14 @@ public class ZslRedisDesktopMainWindow extends BaseWindow{
 
 		this.setVisible(true);
 		
-		this.addWindowListener(new WindowAdapter() {
-			
-		    @Override
-			public void windowClosing(WindowEvent e) {
-		    	ContextHolder.getTree().saveConnectionsToFile();
-		    }
-			
-		});
+//		this.addWindowListener(new WindowAdapter() {
+//
+//		    @Override
+//			public void windowClosing(WindowEvent e) {
+//		    	ContextHolder.getTree().saveConnectionsToFile();
+//		    }
+//
+//		});
 
 		mainWindow = this;
 		

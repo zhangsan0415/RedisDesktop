@@ -1,36 +1,24 @@
 package com.zsl.swing.redis.desktop.utils;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zsl.swing.redis.desktop.common.CommandMsg;
 import com.zsl.swing.redis.desktop.common.Constants;
 import com.zsl.swing.redis.desktop.common.ContextHolder;
+import com.zsl.swing.redis.desktop.model.KeyValueEntity;
 import com.zsl.swing.redis.desktop.model.NodeEntity;
 import com.zsl.swing.redis.desktop.window.RedisConsoleWindow;
-
 import com.zsl.swing.redis.desktop.window.ZslRedisDesktopMainWindow;
-import redis.clients.jedis.BuilderFactory;
-import redis.clients.jedis.Client;
-import redis.clients.jedis.GeoCoordinate;
-import redis.clients.jedis.GeoRadiusResponse;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Protocol;
+import redis.clients.jedis.*;
 import redis.clients.jedis.Protocol.Command;
 import redis.clients.jedis.Protocol.Keyword;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.util.SafeEncoder;
 import redis.clients.jedis.util.Slowlog;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -57,7 +45,7 @@ public class RedisUtils {
 			jedis = buildJedis(uniqueId);
 			return jedis.isConnected();
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return false;
 		}finally {
 			close(jedis);
@@ -72,7 +60,7 @@ public class RedisUtils {
 			int dbCount = Integer.parseInt(databases.get(1));
 			return Math.min(dbCount,Constants.MAX_DB_COUNT);
 		} catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return Constants.DB_COUNT;
 		}finally {
 			close(jedis);
@@ -139,7 +127,7 @@ public class RedisUtils {
 			jedis.select(dbIndex);
 			return true;
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return false;
 		}finally {
 			close(jedis);
@@ -173,7 +161,7 @@ public class RedisUtils {
 			
 			return new ScanResult<>(cursor, resultList);
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return null;
 		}finally {
 			close(jedis);
@@ -201,8 +189,74 @@ public class RedisUtils {
 				return null;
 			}
 		} catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return null;
+		}finally {
+			close(jedis);
+		}
+	}
+
+	public static boolean add(String uniqueId, int dbIndex, KeyValueEntity params){
+		if(Objects.isNull(params) || !params.isOk()){
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError("参数有误");
+			return false;
+		}
+
+		Jedis jedis = null;
+		try {
+			jedis = buildJedis(uniqueId);
+			jedis.select(dbIndex);
+			switch (params.getType()) {
+				case "string":
+					SetParams other = new SetParams();
+					other.ex((int)params.getExpire());
+					String result = jedis.set(params.getKey(), params.getValue(), other);
+					return Constants.OK.equalsIgnoreCase(result);
+				case "list":
+					String ltrim = jedis.ltrim(key, 1L, 0L);
+					if(!Constants.OK.equalsIgnoreCase(ltrim)){
+						ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError("删除原list失败");
+						return false;
+					}
+
+					String[] list = JSON.parseArray(value, String.class).stream().toArray(String[]::new);
+					Long lpush = jedis.lpush(key, list);
+
+					return lpush > 0L;
+				case "set":
+					Long del = jedis.del(key);
+					if(del < 1L){
+						ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError("删除原set失败");
+						return false;
+					}
+
+					String[] set = JSON.parseArray(value, String.class).stream().toArray(String[]::new);
+					Long sadd = jedis.sadd(key, set);
+
+					return sadd > 0L;
+				case "zset":
+					jedis.zadd
+					Long zDel = jedis.del(key);
+					if(zDel < 1L){
+						ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError("删除原set失败");
+						return false;
+					}
+
+					String[] zSet = JSON.parseArray(value, String.class).stream().toArray(String[]::new);
+					Long sadd = jedis.zadd(key, zSet);
+
+					return sadd > 0L;
+				case "hash":
+					return JSON.toJSONString(jedis.hgetAll(key));
+				default:
+					ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError("不支持的类型");
+					return false;
+			}
+
+			return true;
+		} catch (Exception e) {
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
+			return false;
 		}finally {
 			close(jedis);
 		}
@@ -214,7 +268,7 @@ public class RedisUtils {
 			jedis = buildJedis(uniqueId);
 			return jedis.keys(Constants.REDIS_ALL_PATTERN);
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return null;
 		}finally {
 			close(jedis);
@@ -231,7 +285,7 @@ public class RedisUtils {
 				return keys.stream().toArray(String[]::new);
 			}
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 		} finally {
 			close(jedis);
 		}
@@ -249,7 +303,7 @@ public class RedisUtils {
 			}
 			return true;
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return false;
 		} finally {
 			close(jedis);
@@ -263,7 +317,7 @@ public class RedisUtils {
 			jedis.select(dbIndex);
 			return jedis.del(key) == 1L;
 		}catch (Exception e) {
-			ContextHolder.logError(e);
+			ZslRedisDesktopMainWindow.getZslErrorLogPanel().logError(e);
 			return false;
 		} finally {
 			close(jedis);

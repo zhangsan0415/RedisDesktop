@@ -13,6 +13,7 @@ import com.zsl.swing.redis.desktop.utils.FileUtils;
  * @description 根节点，即为Connections节点，下含多个connection
  *
  */
+@Deprecated
 public class RootEntity implements Entity{
 	
 	private String showName = "Connections";
